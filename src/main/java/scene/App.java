@@ -1,28 +1,26 @@
 package scene;
 
-import com.sun.java.swing.action.*;
-import com.sun.java.swing.ui.*;
-import com.sun.tools.javac.util.*;
 import com.thoughtworks.xstream.*;
 
 import javax.swing.*;
+import javax.swing.border.*;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.dnd.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
-import java.util.*;
 import java.util.List;
+import java.util.Timer;
+import java.util.*;
 
 /**
  * Hello world!
  */
 public class App {
-    private HashMap<URL, ImageIcon> images = new HashMap<URL, ImageIcon>();
-    private WeakHashMap<JPanel, List<Pair<Point, URL>>> panes = new WeakHashMap<JPanel, List<Pair<Point, URL>>>();
     private JInternalFrame dumpWindow;
     final JTextPane permText = new JTextPane();
+    private static final Timer TIMER = new Timer();
 
 
     public App() {
@@ -30,6 +28,8 @@ public class App {
 
         final JFrame jf = new JFrame("Scene Layout");
         final JDesktopPane desktopPane = new JDesktopPane();
+
+
         final JPanel panel = new JPanel(new BorderLayout());
         jf.setContentPane(panel);
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -74,40 +74,24 @@ public class App {
 
 
         final JCheckBox permaViz = new JCheckBox();
+        permaViz.setText("Show the dump window");
+        permaViz.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+
         dumpWindow = new JInternalFrame("perma dump window");
-        dumpWindow.setContentPane(
-                new JScrollPane(permText)
-        );
-        dumpWindow.setMenuBar(new CommonMenuBar(ActionManager.getInstance()) {
-            @Override
-            protected void configureMenu() {
+        dumpWindow.setContentPane(new JScrollPane(permText));
 
-
-            }
-        });
-
-        permaViz.setBorder(BorderFactory.createTitledBorder("Show the dump window"));
-
-        permaViz.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (dumpWindow == null) dumpWindow = new JInternalFrame("PermDumper");
-
-            }
-        });
-
-
-        comboNewWindow.setMaximumSize(comboNewWindow.getPreferredSize());
-
-
-        permaViz.setSelected(false);
-        bar.add(permaViz);
         permaViz.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dumpWindow.setVisible(permaViz.isSelected());
             }
         });
+
+        comboNewWindow.setMaximumSize(comboNewWindow.getPreferredSize());
+
+
+        permaViz.setSelected(false);
+        bar.add(permaViz);
         desktopPane.add(dumpWindow);
         dumpWindow.setSize(400, 400);
         dumpWindow.setResizable(true);
@@ -123,7 +107,7 @@ public class App {
 
                 final JInternalFrame ff = new JInternalFrame();
 
-                final ScenePanel c = new ScenePanel();
+                final ScenePanel c = new ScenePanel(App.this);
                 ff.setContentPane(c);
                 desktopPane.add(ff);
                 final Dimension d = (Dimension) in[0];
@@ -131,7 +115,7 @@ public class App {
                 c.setPreferredSize(d);
 
                 ff.setSize(d.width + 50, d.height + 50);
-                panes.put(c, (List<Pair<Point, URL>>) in[1]);
+                ScenePanel.panes.put(c, (List<Pair<Point, URL>>) in[1]);
 
                 c.invalidate();
                 c.repaint();
@@ -253,15 +237,22 @@ public class App {
             if (url != null) {
 
                 final ImageIcon icon = new ImageIcon(url);
-                images.put(url, icon);
-                panes.get(component).add(new Pair<Point, URL>(dragSpot, url));
+                ScenePanel.images.put(url, icon);
+                ScenePanel.panes.get(component).add(new Pair<Point, URL>(dragSpot, url));
 
-                List<Pair<Point, URL>> pairs = panes.get(component);
+                List<Pair<Point, URL>> pairs = ScenePanel.panes.get(component);
 
                 final Object[] objects = {component.getMaximumSize(), pairs,};
                 final String s = XSTREAM.toXML(objects);
                 permText.setText(s);
 
+                final TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        component.paint(component.getGraphics());
+                    }
+                };
+                TIMER.schedule(timerTask, 250);
 
             }
         }
@@ -297,7 +288,7 @@ public class App {
 
             final JInternalFrame vw = new JInternalFrame();
 
-            final JPanel iView = new ScenePanel();
+            final JPanel iView = new ScenePanel(App.this);
             iView.setLayout(null);
             vw.setContentPane(iView);
 
@@ -321,7 +312,7 @@ public class App {
             final Dimension preferredSize = new Dimension(w, h);
             iView.setPreferredSize(preferredSize);
             iView.setMaximumSize(new Dimension(w, h));
-            
+
             vw.pack();
 
             dropTarget.setActive(true);
@@ -336,43 +327,4 @@ public class App {
 
     }
 
-    private class ScenePanel extends JPanel {
-
-        {
-            panes.put(this, new ArrayList<Pair<Point, URL>>());
-
-        }
-
-        @Override
-        public void paint(Graphics g) {
-
-            super.paint(g);
-
-            final List<Pair<Point, URL>> pairs = panes.get(this);
-
-            for (Pair<Point, URL> pair : pairs) {
-
-                final Point p = pair.fst;
-
-
-                final ImageIcon icon = images.get(pair.snd);
-                final int loadStatus = icon.getImageLoadStatus();
-                if (loadStatus == MediaTracker.COMPLETE) {
-                    g.drawImage(icon.getImage(), p.x, p.y, this);
-
-                } else {
-                    if
-                            (loadStatus == MediaTracker.LOADING) {
-                        final Graphics2D g2 = (Graphics2D) (g);
-                        g2.setPaint(Color.red);
-                        g2.drawRoundRect(p.x, p.y, icon.getIconWidth(), icon.getIconHeight(), 3, 3);
-
-                    } else return;
-
-                }
-            }
-        }
-    }
 }
-
- 
