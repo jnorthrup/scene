@@ -80,7 +80,6 @@
                         <manifest>
                             <mainClass>scene.SceneLayoutApp</mainClass>
                         </manifest>
-
                     </archive>
                 </configuration>
             </plugin>

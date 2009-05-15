@@ -4,3 +4,4 @@ scene.iws
 .idea
 .classpath
 target/classes target/test-classes
+target/archive-tmp target/classes target/maven-archiver target/scene-1.0-jar-with-dependencies.jar target/scene-1.0.jar target/test-classes
