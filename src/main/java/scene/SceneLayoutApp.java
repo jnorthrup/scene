@@ -1,6 +1,8 @@
 package scene;
 
 import com.thoughtworks.xstream.XStream;
+import scene.anim.ProgressBarAnimator;
+import scene.anim.SliderBarAnimator;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -70,7 +72,26 @@ public class SceneLayoutApp {
         );
         comboNewWindow.setBorder(BorderFactory.createTitledBorder("Create New Window"));
         bar.add(comboNewWindow);
+        bar.add(new AbstractAction("Progress Bars") {
 
+            /**
+             * Invoked when an action occurs.
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ProgressBarAnimator();
+            }
+        });
+        bar.add(new AbstractAction("Sliders") {
+
+            /**
+             * Invoked when an action occurs.
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new SliderBarAnimator();
+            }
+        });
 
         final JCheckBox permaViz = new JCheckBox();
         permaViz.setText("Show the dump window");

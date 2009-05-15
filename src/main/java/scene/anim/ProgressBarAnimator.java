@@ -1,10 +1,13 @@
-package scene;
+package scene.anim;
 
+import scene.SceneLayoutApp;
 import scene.gif.AnimatedGifEncoder;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.HierarchyBoundsListener;
+import java.awt.event.HierarchyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -19,7 +22,7 @@ import java.util.ArrayList;
 public class ProgressBarAnimator {
     private JInternalFrame inf;
 
-    ProgressBarAnimator() {
+    public ProgressBarAnimator() {
         inf = new JInternalFrame("ProgressBarAnimator");
         SceneLayoutApp.desktopPane.add(inf);
 
@@ -37,21 +40,27 @@ public class ProgressBarAnimator {
         bar.setValue(0);
 
 
-        inf.setResizable(true);
-        inf.setMaximizable(false);
-        inf.setIconifiable(false);
-        inf.setClosable(true);
-        inf.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
-        inf.pack();
-        inf.show();
 
         final ArrayList<Image> frames = new ArrayList<Image>();
 
-        final JTextField minVtext = new JTextField(3);
+        final JTextField minVtext = new JTextField("0",4);
         minVtext.setBorder(BorderFactory.createTitledBorder("min"));
         t.add(minVtext);
 
-        final JTextField maxVtext = new JTextField(3);
+        final JTextField maxVtext = new JTextField(String.valueOf(bar.getWidth()),4);
+        bar.addHierarchyBoundsListener(new HierarchyBoundsListener() {
+            @Override
+            public void ancestorMoved(HierarchyEvent e) {
+
+            }
+
+            @Override
+            public void ancestorResized(HierarchyEvent e) {
+
+                maxVtext.setText(String.valueOf(bar.getWidth()));
+}
+        });
+
         maxVtext.setBorder(BorderFactory.createTitledBorder("max"));
         t.add(maxVtext);
 
@@ -96,6 +105,13 @@ public class ProgressBarAnimator {
             }
         });
 
+        inf.setResizable(true);
+        inf.setMaximizable(false);
+        inf.setIconifiable(false);
+        inf.setClosable(true);
+        inf.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
+        inf.pack();
+        inf.show();
 
     }
 

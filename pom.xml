@@ -13,32 +13,7 @@
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>jmf</groupId>
-            <artifactId>mediaplayer</artifactId>
-            <version>2.1.1e</version>
-        </dependency>
-        <dependency>
-            <groupId>jmf</groupId>
-            <artifactId>multiplayer</artifactId>
-            <version>2.1.1e</version>
-        </dependency>
-        <dependency>
-            <groupId>jmf</groupId>
-            <artifactId>customizer</artifactId>
-            <version>2.1.1e</version>
-        </dependency>
-        <dependency>
-            <groupId>jmf</groupId>
-            <artifactId>jmf</artifactId>
-            <version>2.1.1e</version>
-        </dependency>
-        <dependency>
-            <groupId>jmf</groupId>
-            <artifactId>javamp3</artifactId>
-            <version>2.1.1e</version>
-        </dependency>
+        </dependency> 
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
