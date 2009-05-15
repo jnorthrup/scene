@@ -29,13 +29,21 @@ package scene.util;/*
  */
 
 import javax.media.*;
-import javax.media.control.*;
-import javax.media.datasink.*;
-import javax.media.format.*;
-import javax.media.protocol.*;
+import javax.media.control.QualityControl;
+import javax.media.control.TrackControl;
+import javax.media.datasink.DataSinkErrorEvent;
+import javax.media.datasink.DataSinkEvent;
+import javax.media.datasink.DataSinkListener;
+import javax.media.datasink.EndOfStreamEvent;
+import javax.media.format.AudioFormat;
+import javax.media.format.VideoFormat;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.FileTypeDescriptor;
 import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Vector;
 
 
 /**

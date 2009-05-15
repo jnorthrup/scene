@@ -1,12 +1,13 @@
 package scene;
 
-import com.thoughtworks.xstream.*;
+import com.thoughtworks.xstream.XStream;
 
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
-import java.awt.event.*;
-import java.net.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URI;
 import java.util.List;
 import java.util.Timer;
 
@@ -35,9 +36,8 @@ public class SceneLayoutApp {
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         final JMenuBar mb = new JMenuBar();
         jf.setJMenuBar(mb);
-        
-         
-        
+
+
         final JMenu jMenu = new JMenu("File");
         mb.add(jMenu);
         mb.add(new JMenu("Edit"));
@@ -65,7 +65,7 @@ public class SceneLayoutApp {
                 });
 
         comboNewWindow.addActionListener(
-                new scene.action.CreateWindowAction()
+                new ScenePanel.CreateSceneWindow()
 
         );
         comboNewWindow.setBorder(BorderFactory.createTitledBorder("Create New Window"));
@@ -116,7 +116,7 @@ public class SceneLayoutApp {
                         c.setPreferredSize(d);
 
                         ff.setSize(d.width + 50, d.height + 50);
-                        ScenePanel.panes.put(c, (List<Pair<Point, URL>>) in[1]);
+                        ScenePanel.panes.put(c, (List<Pair<Point, Iterable<URI>>>) in[1]);
 
                         c.invalidate();
                         c.repaint();

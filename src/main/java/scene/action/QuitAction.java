@@ -1,14 +1,14 @@
 package scene.action;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
 
 /**
  * User: jim
-* Date: May 14, 2009
-* Time: 1:00:18 AM
-*/             public 
-class QuitAction extends AbstractAction {
+ * Date: May 14, 2009
+ * Time: 1:00:18 AM
+ */
+public class QuitAction extends AbstractAction {
     public QuitAction() {
         super("Quit");
     }

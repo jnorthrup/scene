@@ -5,7 +5,7 @@ package scene;
  * Date: May 13, 2009
  * Time: 7:11:18 AM
  */
-class Pair<$1, $2> {
+public class Pair<$1, $2> {
     $1 first;
     $2 second;
 
