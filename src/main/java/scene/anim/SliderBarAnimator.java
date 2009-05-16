@@ -349,15 +349,7 @@ public class SliderBarAnimator {
                     final Object val = valConvertMethod.invoke(null, inputValue);
                     method.invoke(bar, val);
                     break; //
-                } catch (IllegalAccessException e1) {
-                    e1.printStackTrace();  //TODO: verify for a purpose
-                } catch (IllegalArgumentException e1) {
-                    e1.printStackTrace();  //TODO: verify for a purpose
-                } catch (InvocationTargetException e1) {
-                    e1.printStackTrace();  //TODO: verify for a purpose
-                } catch (NoSuchMethodException e1) {
-                    e1.printStackTrace();  //TODO: verify for a purpose
-                } catch (SecurityException e1) {
+                } catch ( Exception e1) {
                     e1.printStackTrace();  //TODO: verify for a purpose
                 }
             }

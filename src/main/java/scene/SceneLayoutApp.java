@@ -7,11 +7,13 @@ import scene.anim.SliderBarAnimator;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
+import java.awt.image.ImageFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URI;
-import java.util.List;
 import java.util.Timer;
+import java.util.ArrayList;
+import java.util.List;
+import java.net.URL;
 
 /**
  * Hello world!
@@ -137,7 +139,8 @@ public class SceneLayoutApp {
                         c.setPreferredSize(d);
 
                         ff.setSize(d.width + 50, d.height + 50);
-                        ScenePanel.panes.put(c, (List<Pair<Point, Iterable<URI>>>) in[1]);
+                        ScenePanel.panes.put(
+                                c, (List<Pair<Point, ArrayList<URL>>>) in[1]);
 
                         c.invalidate();
                         c.repaint();

@@ -8,25 +8,23 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import static java.lang.Character.isWhitespace;
+import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.ByteOrder;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.List;
-import static java.lang.Character.*;
 
 /**
  * User: jim
  * Time: 7:14:43 AM
  */
 public class ScenePanel extends JPanel {
-    static HashMap<URI, ImageIcon> images = new HashMap<URI, ImageIcon>();
-    static WeakHashMap<JPanel, java.util.List<Pair<Point, Iterable<URI>>>> panes = new WeakHashMap<JPanel, List<Pair<Point, Iterable<URI>>>>();
+    static HashMap<URL, ImageIcon> images = new HashMap<URL, ImageIcon>();
+    static WeakHashMap<JPanel, java.util.List<Pair<Point, ArrayList<URL>>>> panes = new WeakHashMap<JPanel, List<Pair<Point, ArrayList<URL>>>>();
     static DataFlavor[] FLAVORS;
 
 
@@ -52,7 +50,7 @@ public class ScenePanel extends JPanel {
                         new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
                 */
         };
-        panes.put(this, new ArrayList<Pair<Point, Iterable<URI>>>());
+        panes.put(this, new ArrayList<Pair<Point, ArrayList<URL>>>());
 
         this.setDropTarget(new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, new ImageUrlDropTargetListener(), true));
     }
@@ -62,22 +60,18 @@ public class ScenePanel extends JPanel {
 
         super.paint(g);
 
-        final List<Pair<Point, Iterable<URI>>> pairs = panes.get(this);
+        final List<Pair<Point, ArrayList<URL>>> pairs = panes.get(this);
 
-        for (final Pair<Point, Iterable<URI>> pair : pairs) {
+        for (final Pair<Point, ArrayList<URL>> pair : pairs) {
 
-            final Point p = pair.first;
+            final Point p = pair.$1();
 
 
-            ImageIcon icon = images.get(pair.second);
-            if (icon == null)
-                try {
-                    URI uri = pair.second.iterator().next();
-                    images.put(uri, icon = new ImageIcon(uri.toURL()));
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();  //TODO: verify for a purpose
-                }
-
+            ImageIcon icon = images.get(pair.$2());
+            if (icon == null) {
+                URL uri = pair.$2().iterator().next();
+                images.put(uri, icon = new ImageIcon(uri));
+            }
             final int loadStatus = icon.getImageLoadStatus();
             if (loadStatus == MediaTracker.COMPLETE) {
                 g.drawImage(icon.getImage(), p.x, p.y, this);
@@ -150,7 +144,7 @@ public class ScenePanel extends JPanel {
             // important to first try uriListFlavor
 
 
-            Iterable<URI> res = null;
+            ArrayList<URL> res = null;
             Transferable transferable = event.getTransferable();
 
             for (DataFlavor flavor : FLAVORS) {
@@ -164,23 +158,19 @@ public class ScenePanel extends JPanel {
 
                             if (data instanceof ByteBuffer) {
                                 ByteBuffer buffer = (ByteBuffer) data;
-                               /* if (buffer.get(0) == 0 || buffer.get(1) == 0) {
-                                    str = buffer.asCharBuffer().toString();
-                                } else*/
+                                /* if (buffer.get(0) == 0 || buffer.get(1) == 0) {
+                                   str = buffer.asCharBuffer().toString();
+                               } else*/
                                 CharBuffer charBuffer = buffer.order(ByteOrder.nativeOrder()).asCharBuffer();
 
                                 char c = charBuffer.get();
-                                while(charBuffer.hasRemaining()&&!isWhitespace(c = charBuffer.get())&&c>1);
-                                str=charBuffer.limit(charBuffer.position()-1).position(0).toString()  ;
+                                while (charBuffer.hasRemaining() && !isWhitespace(c = charBuffer.get()) && c > 1) ;
+                                str = charBuffer.limit(charBuffer.position() - 1).position(0).toString();
 
                             } else
 
                                 str = String.valueOf(data);
-                            URI o = null;
-                                o = new URI(str);
-                            res = Collections.singleton(o);
-                        } catch (URISyntaxException e) {
-                            e.printStackTrace();  //TODO: verify for a purpose
+                            (res = new ArrayList<URL>(1)).add(new URL(str));
                         } catch (UnsupportedFlavorException e) {
                             e.printStackTrace();  //TODO: verify for a purpose
                         } catch (IOException e) {
@@ -188,15 +178,11 @@ public class ScenePanel extends JPanel {
                         }
                     } else {
                         try {
-                            ArrayList<URI> ar = new ArrayList<URI>();
+                            ArrayList<URL> ar = new ArrayList<URL>();
                             for (Object o : (Iterable<?>) transferable.getTransferData(flavor)) {
-                                try {
-                                    str = String.valueOf(o);
-                                    URI u = new URI(str);
-                                    ar.add(u);
-                                } catch (URISyntaxException e) {
-                                    e.printStackTrace();  //TODO: verify for a purpose
-                                }
+                                str = String.valueOf(o);
+                                URL u = new URL(str);
+                                ar.add(u);
                                 res = ar;
                             }
                         } catch (UnsupportedFlavorException e) {
@@ -208,17 +194,18 @@ public class ScenePanel extends JPanel {
                     System.err.println("dump: " + String.valueOf(res));
 
                     if (res != null) {
-                        final URI uri;
-                        uri = res.iterator().next();
-                        panes.get(component).add(new Pair<Point, Iterable<URI>>(dragSpot, res));
+                        final URL url;
+                        url = res.iterator().next();
 
-                        final Iterable<URI> uriList = res;
+                        panes.get(component).add(new scene.Pair<Point, ArrayList<URL>>(dragSpot, res));
+
+                        final ArrayList<URL> uriList = res;
                         SceneLayoutApp.TIMER.schedule(new TimerTask() {
                             @Override
                             public void run() {
                                 URLConnection urlConnection = null;
                                 try {
-                                    urlConnection = uri.toURL().openConnection();
+                                    urlConnection = url.openConnection();
 
                                 } catch (IOException e) {
                                     e.printStackTrace();  //TODO: Verify for a purpose
@@ -230,16 +217,11 @@ public class ScenePanel extends JPanel {
                         }, 250);
 
                         ImageIcon icon = null;
-                        try {
-                            icon = new ImageIcon(uri.toURL()
-                            );
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();  //TODO: verify for a purpose
-                        }
+                        icon = new ImageIcon(url);
 
-                        images.put(uri, icon);
+                        images.put(url, icon);
 
-                        final List<Pair<Point, Iterable<URI>>> pairs = panes.get(component);
+                        final List<Pair<Point, ArrayList<URL>>> pairs = panes.get(component);
 
                         final Object[] objects = {component.getMaximumSize(), pairs,};
                         final String s = SceneLayoutApp.XSTREAM.toXML(objects);
