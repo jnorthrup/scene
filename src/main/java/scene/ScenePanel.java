@@ -1,34 +1,29 @@
 package scene;
 
+import scene.dnd.ImageUrlDropTargetListener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.*;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
-import static java.lang.Character.isWhitespace;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.WeakHashMap;
 
 /**
  * User: jim
  * Time: 7:14:43 AM
  */
 public class ScenePanel extends JPanel {
-    static HashMap<URL, ImageIcon> images = new HashMap<URL, ImageIcon>();
-    static WeakHashMap<JPanel, java.util.List<Pair<Point, ArrayList<URL>>>> panes = new WeakHashMap<JPanel, List<Pair<Point, ArrayList<URL>>>>();
-    static DataFlavor[] FLAVORS;
+    public static HashMap<URL, ImageIcon> images = new HashMap<URL, ImageIcon>();
+    public static WeakHashMap<JPanel, java.util.List<Pair<Point, ArrayList<URL>>>> panes = new WeakHashMap<JPanel, List<Pair<Point, ArrayList<URL>>>>();
+    public final static DataFlavor[] FLAVORS;
 
-
-    public ScenePanel() {
+    static {
 
 
         DataFlavor flavor = new DataFlavor("application/x-java-url;class=java.net.URL", "URL");
@@ -50,6 +45,9 @@ public class ScenePanel extends JPanel {
                         new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
                 */
         };
+    }
+
+    {
         panes.put(this, new ArrayList<Pair<Point, ArrayList<URL>>>());
 
         this.setDropTarget(new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, new ImageUrlDropTargetListener(), true));
@@ -80,164 +78,6 @@ public class ScenePanel extends JPanel {
                     g.setColor(Color.red);
                     g.drawRoundRect(p.x, p.y, icon.getIconWidth(), icon.getIconHeight(), 3, 3);
                 } else {
-                    return;
-                }
-            }
-        }
-    }
-
-    /**
-     * User: jim
-     * Date: May 13, 2009
-     * Time: 7:04:11 PM
-     */
-    public static class ImageUrlDropTargetListener implements DropTargetListener {
-        private static final Charset UTF16 = Charset.forName("UTF16");
-
-        /**
-         * The canvas only supports Files and URL's
-         *
-         * @see java.awt.dnd.DropTargetListener#dragEnter(java.awt.dnd.DropTargetDragEvent)
-         */
-        public void dragEnter(DropTargetDragEvent event) {
-            for (DataFlavor flavor : FLAVORS) {
-                if (event.isDataFlavorSupported(flavor)) {
-                    System.err.println("supported: " + flavor.toString());
-                    return;
-                }
-            }
-            event.rejectDrag();
-        }
-
-        /**
-         * @see java.awt.dnd.DropTargetListener#dragExit(java.awt.dnd.DropTargetEvent)
-         */
-        public void dragExit(DropTargetEvent event) {
-        }
-
-        /**
-         * @see java.awt.dnd.DropTargetListener#dragOver(java.awt.dnd.DropTargetDragEvent)
-         */
-        public void dragOver(DropTargetDragEvent event) {
-        }
-
-        /**
-         * @see java.awt.dnd.DropTargetListener#dropActionChanged(java.awt.dnd.DropTargetDragEvent)
-         */
-        public void dropActionChanged(DropTargetDragEvent event) {
-        }
-
-        /**
-         * The file or URL has been dropped.
-         *
-         * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
-         */
-        public void drop(final DropTargetDropEvent event) {
-            DropTarget dt = (DropTarget) event.getSource();
-
-            final ScenePanel component = (ScenePanel) dt.getComponent();
-            final Point dragSpot = event.getLocation();
-
-            final int x1 = dragSpot.x;
-            final int y1 = dragSpot.y;
-
-            // important to first try uriListFlavor
-
-
-            ArrayList<URL> res = null;
-            Transferable transferable = event.getTransferable();
-
-            for (DataFlavor flavor : FLAVORS) {
-                if (transferable.isDataFlavorSupported(flavor)) {
-                    String str;
-                    if (!flavor.getRepresentationClass().isAssignableFrom(Iterable.class)) {
-                        try {
-                            event.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-
-                            Object data = transferable.getTransferData(flavor);
-
-                            if (data instanceof ByteBuffer) {
-                                ByteBuffer buffer = (ByteBuffer) data;
-                                /* if (buffer.get(0) == 0 || buffer.get(1) == 0) {
-                                   str = buffer.asCharBuffer().toString();
-                               } else*/
-                                CharBuffer charBuffer = buffer.order(ByteOrder.nativeOrder()).asCharBuffer();
-
-                                char c = charBuffer.get();
-                                while (charBuffer.hasRemaining() && !isWhitespace(c = charBuffer.get()) && c > 1) ;
-                                str = charBuffer.limit(charBuffer.position() - 1).position(0).toString();
-
-                            } else
-
-                                str = String.valueOf(data);
-                            (res = new ArrayList<URL>(1)).add(new URL(str));
-                        } catch (UnsupportedFlavorException e) {
-                            e.printStackTrace();  //TODO: verify for a purpose
-                        } catch (IOException e) {
-                            e.printStackTrace();  //TODO: verify for a purpose
-                        }
-                    } else {
-                        try {
-                            ArrayList<URL> ar = new ArrayList<URL>();
-                            for (Object o : (Iterable<?>) transferable.getTransferData(flavor)) {
-                                str = String.valueOf(o);
-                                URL u = new URL(str);
-                                ar.add(u);
-                                res = ar;
-                            }
-                        } catch (UnsupportedFlavorException e) {
-                            e.printStackTrace();  //TODO: verify for a purpose
-                        } catch (IOException e) {
-                            e.printStackTrace();  //TODO: verify for a purpose
-                        }
-                    }
-                    System.err.println("dump: " + String.valueOf(res));
-
-                    if (res != null) {
-                        final URL url;
-                        url = res.iterator().next();
-
-                        panes.get(component).add(new scene.Pair<Point, ArrayList<URL>>(dragSpot, res));
-
-                        final ArrayList<URL> uriList = res;
-                        SceneLayoutApp.TIMER.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                URLConnection urlConnection = null;
-                                try {
-                                    urlConnection = url.openConnection();
-
-                                } catch (IOException e) {
-                                    e.printStackTrace();  //TODO: Verify for a purpose
-                                }
-                                assert urlConnection != null;
-                                System.err.println(urlConnection.getContentType());
-
-                            }
-                        }, 250);
-
-                        ImageIcon icon = null;
-                        icon = new ImageIcon(url);
-
-                        images.put(url, icon);
-
-                        final List<Pair<Point, ArrayList<URL>>> pairs = panes.get(component);
-
-                        final Object[] objects = {component.getMaximumSize(), pairs,};
-                        final String s = SceneLayoutApp.XSTREAM.toXML(objects);
-                        SceneLayoutApp.permText.setText(s);
-
-                        final TimerTask timerTask = new TimerTask() {
-                            @Override
-                            public void run() {
-
-                                component.paint(component.getGraphics());
-                            }
-                        };
-
-                        SceneLayoutApp.TIMER.schedule(timerTask, 250);
-
-                    }
                     return;
                 }
             }

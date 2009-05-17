@@ -1,27 +1,27 @@
 package scene;
 
 import com.thoughtworks.xstream.XStream;
+import scene.action.createWebView;
 import scene.anim.ProgressBarAnimator;
 import scene.anim.SliderBarAnimator;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
-import java.awt.image.ImageFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Timer;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.net.URL;
+import java.util.Timer;
 
 /**
  * Hello world!
  */
 public class SceneLayoutApp {
     static private JInternalFrame dumpWindow;
-    static final JTextPane permText = new JTextPane();
-    static final Timer TIMER = new Timer();
+    public static final JTextPane permText = new JTextPane();
+    public static final Timer TIMER = new Timer();
 
     public final static JDesktopPane desktopPane = new JDesktopPane();
     private static SceneLayoutApp instance;
@@ -113,6 +113,7 @@ public class SceneLayoutApp {
 
 
         permaViz.setSelected(false);
+        bar.add(new createWebView());
         bar.add(permaViz);
         desktopPane.add(dumpWindow);
         dumpWindow.setSize(400, 400);
@@ -167,7 +168,7 @@ public class SceneLayoutApp {
         jf.setVisible(true);
     }
 
-    static final XStream XSTREAM = new XStream();
+    public static final XStream XSTREAM = new XStream();
 
     static public void main(String[] args) {
         new SceneLayoutApp();
@@ -177,5 +178,6 @@ public class SceneLayoutApp {
     static public SceneLayoutApp getInstance() {
         return instance == null ? instance = new SceneLayoutApp() : instance;
     }
+
 }
 
