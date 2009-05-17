@@ -5,14 +5,14 @@ import scene.ScenePanel;
 
 import javax.swing.*;
 import java.awt.*;
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.NORTH;
+import static java.awt.BorderLayout.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -34,6 +34,8 @@ public class createWebView extends AbstractAction {
     private JInternalFrame jInternalFrame;
     private JTextField urlText;
     private JEditorPane jEditorPane;
+    private JLabel qrCode;
+    private JScrollPane editorScrollPane;
 
     public createWebView() {
         super("Web");
@@ -58,8 +60,10 @@ public class createWebView extends AbstractAction {
         bar.add(urlText);
         jInternalFrame.setContentPane(panel);
         panel.add(bar, NORTH);
-        panel.add(new JScrollPane(jEditorPane), CENTER);
-
+        editorScrollPane = new JScrollPane(jEditorPane);
+        qrCode = new JLabel();
+        panel.add(qrCode, WEST);
+        panel.add(editorScrollPane, CENTER);
 
         urlText.addActionListener(new ActionListener() {
             @Override
@@ -73,7 +77,7 @@ public class createWebView extends AbstractAction {
         SceneLayoutApp.desktopPane.add(jInternalFrame);
 
         jInternalFrame.pack();
-        ;
+
         jInternalFrame.show();
 
         new DropTarget(jInternalFrame, DnDConstants.ACTION_LINK, new
@@ -200,6 +204,23 @@ public class createWebView extends AbstractAction {
             System.err.println("Couldn't find file: " + url.toExternalForm());
         }
         urlText.setText(url.toExternalForm());
+        try {
+            final ImageIcon icon;
+            final Dimension viewSize = editorScrollPane.getViewport().getViewSize();
+            final int v = (int) viewSize.getHeight();
+            final URL url1 = new URL("http://chart.apis.google.com/chart?cht=qr&chs=" + v + "&chl=" + url.toExternalForm());
+            icon = new ImageIcon(url1);
+
+//            jEditorPane.setPreferredSize(viewSize);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    qrCode.setIcon(icon);
+                    qrCode.invalidate();
+                    qrCode.repaint();
+                }
+            });
+        } catch (MalformedURLException ignored) {
+        }
     }
 
 }
