@@ -14,6 +14,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Hello world!
@@ -25,6 +27,7 @@ public class SceneLayoutApp {
 
     public final static JDesktopPane desktopPane = new JDesktopPane();
     private static SceneLayoutApp instance;
+    public static ExecutorService threadPool = Executors.newCachedThreadPool();
 
     public SceneLayoutApp() {
         super();
