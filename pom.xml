@@ -4,7 +4,7 @@
     <groupId>hideftvads</groupId>
     <artifactId>scene</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <name>scene</name>
     <url>http://maven.apache.org</url>
     <dependencies>

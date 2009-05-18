@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Copyright hideftvads.com 2009 all rights reserved.
@@ -74,6 +75,7 @@ public class createWebView extends AbstractAction {
         jInternalFrame.setContentPane(outerPanel);
         outerPanel.add(bar, NORTH);
         jScrollPane = new JScrollPane(jEditorPane);
+        jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         qrCode = new JLabel();
         panel.add(qrCode, WEST);
         panel.add(jScrollPane, CENTER);
@@ -256,9 +258,17 @@ public class createWebView extends AbstractAction {
 
 
                 slider.setValue(slider.getMinimum());
+                try {
+                    engine.exchange(null, 1, TimeUnit.NANOSECONDS);
+                } catch (Exception ignored) {
+                }
+
 
                 Runnable painterThread = new Runnable() {
                     public void run() {
+                        try {
+                        } catch (Exception e1) {
+                        }
                         BufferedImage image = null;
                         double end = 0.9 * slider.getMaximum();
                         while (slider.getValue() < end) {
@@ -291,33 +301,36 @@ public class createWebView extends AbstractAction {
                 final JFileChooser chooser = new JFileChooser("/tmp/");
 
                 if (APPROVE_OPTION == chooser.showSaveDialog(SceneLayoutApp.desktopPane)) {
-                    Runnable canvasThread = new Runnable() {
-                        public void run() {
-                            File selectedFile = chooser.getSelectedFile();
-//                    Callable writeCallable = new Callable() {
-//                        public Object call() throws Exception {
-                            AnimatedGifEncoder gifEncoder = new AnimatedGifEncoder();
-                            gifEncoder.setFrameRate(10);
-                            gifEncoder.setQuality(20);
-                            gifEncoder.setDelay(100);
-                            gifEncoder.start(selectedFile.getAbsolutePath());
-                            BufferedImage image = null;
-                            try {
-                                do {
-                                    image = engine.exchange(image);
-                                    gifEncoder.addFrame(image);
 
-                                }
-                                while (image != null);
-                            } catch (Exception e1) {
-                            }
-                            System.out.println("gifencoder.finish() =" + gifEncoder.finish());
-                        }
-                    };
+
+                    File selectedFile = chooser.getSelectedFile();
+                    AnimatedGifEncoder gifEncoder = new AnimatedGifEncoder();
+
+                    gifEncoder.setFrameRate(10);
+                    gifEncoder.setQuality(10);
+                    gifEncoder.setDelay(100);
+                    gifEncoder.start(selectedFile.getAbsolutePath());
                     Future<Object> future = (Future<Object>) SceneLayoutApp.threadPool.submit(painterThread);
-                    SceneLayoutApp.threadPool.submit(canvasThread);
+
+
+                    BufferedImage image = null;
+                    try {
+                        do {
+                            image = engine.exchange(image);
+                            gifEncoder.addFrame(image);
+
+                        }
+                        while (image != null);
+                        future.get();
+                    } catch (Exception e1) {
+                    }
+                    System.out.println("gifencoder.finish() =" + gifEncoder.finish());
+                    jInternalFrame.pack();
+
                 }
             }
         });
     }
-}
+
+    ;
+};
