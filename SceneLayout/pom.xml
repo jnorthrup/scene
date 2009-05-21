@@ -9,9 +9,8 @@
   </parent>
   <groupId>hideftvads</groupId>
   <artifactId>SceneLayout</artifactId>
-  <version>0.0.5</version>
   <name>SceneLayout</name>
-    <url>http://localhost:8080</url>
+    <url>http://demos.hideftvads.com:8080/</url>
     <build>
         <plugins>
             <plugin>
@@ -121,7 +120,7 @@
                     <!-- default force when pack200 false, true when pack200 selected ?? -->
 
                     <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
-                    <outputJarVersions>true</outputJarVersions>
+                    <outputJarVersions>false</outputJarVersions>
 
                     <!--install>false</install--> <!-- not yet supported -->
                     <verbose>true</verbose>
