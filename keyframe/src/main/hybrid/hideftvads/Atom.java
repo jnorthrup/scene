@@ -15,8 +15,6 @@ import java.lang.reflect.*;
 public enum Atom { 
 len(0x4),tag(0x4);
 	public static int recordLen;
-	public java.lang.Class<? extends java.lang.Enum> subRecord;
-	public java.lang.Class valueClazz;
 
 	/**
      * the length of one record
@@ -36,9 +34,13 @@ len(0x4),tag(0x4);
      */
 	public Class<? extends Enum> ___subrecord___;
 	/**
+     * if we find this, we use it for sub-index.
+     */
+	final public Method ___visitorMethod___;
+	/**
      * a hint class for bean-wrapper access to data contained.
      */
-	public Class ___valueclass___;
+	public Class ___valueClass___;
 	
 	
 	
@@ -53,6 +55,9 @@ len(0x4),tag(0x4);
      * @param dimensions [0]=___size___,[1]= forced ___seek___
      */
 	Atom (int... dimensions) {
+        Method method = null;try {method = Class.forName(getClass().getName() + "Visitor").getMethod(name(), ByteBuffer.class, int[].class, IntBuffer.class);}catch (Exception e) {}
+        ___visitorMethod___ = method;
+
         int[] dim = init(dimensions);
         ___size___ = dim[0];
         ___seek___ = dim[1];
@@ -62,27 +67,19 @@ len(0x4),tag(0x4);
     int[] init(int... dimensions) {
         int size = dimensions.length > 0 ? dimensions[0] : 0,
                 seek= dimensions.length > 1 ? dimensions[1] : 0;
-
-        if (___subrecord___ == null) {
-            final String[] indexPrefixes = {"", "s", "_", "Index", "Length", "Ref", "Header", "Info", "Table"};
+        if (___visitorMethod___==null&&___subrecord___ == null) {            final String[] indexPrefixes = {"", "s", "_", "Index", "Length", "Ref", "Header", "Info", "Table"};
             for (String indexPrefix : indexPrefixes) {
-                try {
-                    ___subrecord___ = (Class<? extends Enum>) Class.forName(getClass().getPackage().getName() + '.' + name() + indexPrefix);
-                    try {
-                        size = ___subrecord___.getField("___recordlen___").getInt(null);
-                    } catch (Exception e) {
-                    }
-                    break;
-                } catch (ClassNotFoundException e) {
-                }
-            }
+                try {___subrecord___ = (Class<? extends Enum>) Class.forName(getClass().getPackage().getName() + '.' + name() + indexPrefix);
+                    try {size = ___subrecord___.getField("___recordlen___").getInt(null);
+                    } catch (Exception ignored) {}
+                    break;} catch (Exception ignored) {}}
         }
 
         for (String vPrefixe1 : new String[]{"_", "", "$", "Value",}) {
-            if (___valueclass___ != null) break;
+            if (___valueClass___ != null) break;
             String suffix = vPrefixe1;
             for (String name1 : new String[]{name().toLowerCase(), name(),}) {
-                if (___valueclass___ != null) break;
+                if (___valueClass___ != null) break;
                 final String trailName = name1;
                 if (trailName.endsWith(suffix)) {
                     for (String aPackage1 : new String[]{"",
@@ -90,10 +87,10 @@ len(0x4),tag(0x4);
                             "java.lang.",
                             "java.util.",
                     })
-                        if (___valueclass___ == null) break;
+                        if (___valueClass___ == null) break;
                         else
                             try {
-                                ___valueclass___ = Class.forName(aPackage1 + name().replace(suffix, ""));
+                                ___valueClass___ = Class.forName(aPackage1 + name().replace(suffix, ""));
                             } catch (ClassNotFoundException e) {
                             }
                 }
@@ -129,24 +126,18 @@ len(0x4),tag(0x4);
      * @param stack    A stack of 32-bit pointers only to src positions
      */
     private void subIndex(ByteBuffer src, int[] register, IntBuffer stack) {
+        if (___visitorMethod___ != null) try {
+            ___visitorMethod___.invoke(null, src, register, stack);
+            return;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
         System.err.println(name() + ":subIndex src:stack" + src.position() + ':' + stack.position());
         int begin = src.position();
         int stackPtr = stack.position();
         stack.put(begin);
-        if (___isRecord___ && ___subrecord___ != null) { 
-            /*                 try {
-                final hideftvads.Atom table = hideftvads.Atom.valueOf(___subrecord___.getSimpleName());
-                if (table != null) {
-                    //stow the original location
-                    int mark = stack.position();
-                    stack.position((register[Atom.Atom.ordinal()] + table.___seek___) / 4);
-                    ___subrecord___.getMethod("index", ByteBuffer.class, int[].class, IntBuffer.class).invoke(null);
-                    //resume the lower stack activities
-                    stack.position(mark);
-                }
-            } catch (Exception e) {
-                throw new Error(e.getMessage());
-            }
-*/        }
+        if (___isRecord___ && ___subrecord___ != null) {        }
     }}
 //@@ #endAtom

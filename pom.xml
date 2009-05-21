@@ -34,11 +34,10 @@
                     </archive>
                 </configuration>
             </plugin>
-
+                                         
             <plugin>
                 <groupId>org.codehaus.mojo.webstart</groupId>
                 <artifactId>webstart-maven-plugin</artifactId>
-                <version>testing</version>
                 <executions>
                     <execution>
                         <goals>
@@ -147,6 +146,7 @@
                 <configuration>
                     <libs>
                         <lib>${java.home}/lib/rt.jar</lib>
+                        <lib>${java.home}/lib/tools.jar</lib>
                         <lib>${java.home}/lib/jsse.jar</lib>
                     </libs>
                 </configuration>
