@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>gui-parent</artifactId>
+    <groupId>hideftvads</groupId>
+    <version>0.0.5</version>
+  </parent>
+  <groupId>hideftvads</groupId>
+  <artifactId>SceneLayout</artifactId>
+  <version>0.0.5</version>
+  <name>SceneLayout</name>
+    <url>http://localhost:8080</url>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <fork>true</fork>
+                    <meminitial>128m</meminitial>
+                    <maxmem>1024m</maxmem>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorId>
+                        jar-with-dependencies
+                    </descriptorId>
+                    <archive>
+                        <manifest>
+                            <mainClass>scene.SceneLayoutApp</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo.webstart</groupId>
+                <artifactId>webstart-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>jnlp</goal>
+                            <!-- use jnlp, jnlp-inline or jnlp-single as appropriate -->
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!--outputDirectory></outputDirectory--> <!-- not required?? -->
+
+                    <!--
+                    Set to true to exclude all transitive dependencies. Default is false.
+                    -->
+                    <excludeTransitive>false</excludeTransitive>
+
+                    <!-- The path where the libraries are stored within the jnlp structure. not required. by default the libraries are within the working directory -->
+                    <libPath>lib</libPath>
+
+                    <!-- [optional] transitive dependencies filter - if omitted, all transitive dependencies are included -->
+
+                    <!--resourcesDirectory>${project.basedir}/src/main/jnlp/resources</resourcesDirectory--> <!-- default value -->
+
+                    <!-- JNLP generation -->
+                    <jnlp>
+                        <!-- default values -->
+                        <!--inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath-->
+                        <!--inputTemplate>src/main/jnlp/template.vm</inputTemplate--> <!-- relative to inputTemplateResourcePath -->
+                        <!--outputFile>app.jnlp</outputFile-->
+                        <!-- defaults to launch.jnlp -->
+
+                        <!-- used to automatically identify the jar containing the main class. -->
+                        <!-- this is perhaps going to change -->
+                        <mainClass>scene.SceneLayoutApp</mainClass>
+                    </jnlp>
+
+
+                    <!-- SIGNING -->
+                    <!-- defining this will automatically sign the jar and its dependencies, if necessary -->
+                    <sign>
+                        <keystore>Copyright2009HidefTVAdsDotCom</keystore>
+                        <keypass>Copyright2009HidefTVAdsDotCom</keypass>
+                        <!-- we need to override passwords easily from the command line. ${keypass} -->
+                        <storepass>Copyright2009HidefTVAdsDotCom</storepass>
+                        <!-- ${storepass} -->
+                        <!--storetype>Copyright2009HidefTVAdsDotCom</storetype-->
+                        <alias>Copyright2009HidefTVAdsDotCom</alias>
+
+                        <!--validity>Copyright2009HidefTVAdsDotCom</validity-->
+
+                        <!-- only required for generating the keystore -->
+                        <dnameCn>Copyright2009HidefTVAdsDotCom</dnameCn>
+                        <dnameOu>Copyright2009HidefTVAdsDotCom</dnameOu>
+                        <dnameO>Copyright2009HidefTVAdsDotCom</dnameO>
+                        <dnameL>Copyright2009HidefTVAdsDotCom</dnameL>
+                        <dnameSt>Copyright2009HidefTVAdsDotCom</dnameSt>
+                        <dnameC>Copyright2009HidefTVAdsDotCom</dnameC>
+
+                        <verify>true</verify>
+                        <!-- verify that the signing operation succeeded -->
+
+                        <!-- KEYSTORE MANAGEMENT -->
+                        <keystoreConfig>
+                            <delete>true</delete>
+                            <!-- delete the keystore -->
+                            <gen>true</gen>
+                            <!-- optional shortcut to generate the store. -->
+                        </keystoreConfig>
+                    </sign>
+
+                    <!-- BUILDING PROCESS -->
+
+                    <pack200>true</pack200>
+                    <gzip>true</gzip>
+                    <!-- default force when pack200 false, true when pack200 selected ?? -->
+
+                    <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
+                    <outputJarVersions>true</outputJarVersions>
+
+                    <!--install>false</install--> <!-- not yet supported -->
+                    <verbose>true</verbose>
+
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.pyx4me</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <options>
+                        <option>-keep public class scene.SceneLayoutApp {*; }</option>
+                        <option>-allowaccessmodification</option>
+                        <option>-dontskipnonpubliclibraryclassmembers</option>
+                        <option>-dontskipnonpubliclibraryclasses</option>
+                    </options>
+                    <libs>
+                        <lib>${java.home}/lib/rt.jar</lib>
+                        <lib>${java.home}/../lib/tools.jar</lib>
+                        <lib>${java.home}/lib/jsse.jar</lib>
+                    </libs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.4.2</version>
+            <scope>system</scope>
+            <!--systemPath>${basedir}/repo/com/sun/tools/1.4.2/tools-1.4.2.jar</systemPath-->
+            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.3</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>repo</id>
+            <name>repo</name>
+            <url>
+                file://${basedir}/repo/
+            </url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+</project>
