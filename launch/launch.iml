@@ -21,6 +21,30 @@
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/classes" />
           </containerElement>
+          <containerElement type="module" name="SceneLayout">
+            <attribute name="method" value="5" />
+            <attribute name="URI" value="/WEB-INF/lib/SceneLayout-0.0.5.jar" />
+          </containerElement>
+          <containerElement type="library" name="Maven: commons-logging:commons-logging:1.0.4" level="project">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib/" />
+          </containerElement>
+          <containerElement type="library" name="Maven: commons-cli:commons-cli:1.0" level="project">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib/" />
+          </containerElement>
+          <containerElement type="library" name="Maven: commons-lang:commons-lang:1.0" level="project">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib/" />
+          </containerElement>
+          <containerElement type="library" name="Maven: com.thoughtworks.xstream:xstream:1.3" level="project">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib/" />
+          </containerElement>
+          <containerElement type="library" name="Maven: xpp3:xpp3_min:1.1.4c" level="project">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib/" />
+          </containerElement>
         </packaging>
       </configuration>
     </facet>
@@ -34,6 +58,14 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: junit:junit:3.8.1" level="project" />
+    <orderEntry type="module" module-name="SceneLayout" exported="" />
+    <orderEntry type="library" name="Maven: com.sun:tools:1.4.2" level="project" />
+    <orderEntry type="library" exported="" name="Maven: commons-logging:commons-logging:1.0.4" level="project" />
+    <orderEntry type="library" exported="" name="Maven: commons-cli:commons-cli:1.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: commons-lang:commons-lang:1.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: com.thoughtworks.xstream:xstream:1.3" level="project" />
+    <orderEntry type="library" exported="" name="Maven: xpp3:xpp3_min:1.1.4c" level="project" />
   </component>
 </module>
 

@@ -1,7 +1,9 @@
 package scene;
 
 import com.thoughtworks.xstream.XStream;
-import scene.action.createWebView;
+import scene.action.CreateSceneWindowAction;
+import scene.action.CreateWebView;
+import scene.alg.Pair;
 import scene.anim.ProgressBarAnimator;
 import scene.anim.SliderBarAnimator;
 
@@ -72,7 +74,7 @@ public class SceneLayoutApp {
                 });
 
         comboNewWindow.addActionListener(
-                new ScenePanel.CreateSceneWindow()
+                new CreateSceneWindowAction()
 
         );
         comboNewWindow.setBorder(BorderFactory.createTitledBorder("Create New Window"));
@@ -116,7 +118,7 @@ public class SceneLayoutApp {
 
 
         permaViz.setSelected(false);
-        bar.add(new createWebView());
+        bar.add(new CreateWebView());
         bar.add(permaViz);
         desktopPane.add(dumpWindow);
         dumpWindow.setSize(400, 400);
@@ -171,7 +173,10 @@ public class SceneLayoutApp {
         jf.setVisible(true);
     }
 
-    public static final XStream XSTREAM = new XStream();
+    public static final XStream XSTREAM;static {
+        XSTREAM = new XStream();
+//        XSTREAM.aliasType( "triple", Triple.class);
+    }
 
     static public void main(String[] args) {
         new SceneLayoutApp();

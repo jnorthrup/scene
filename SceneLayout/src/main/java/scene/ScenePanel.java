@@ -1,5 +1,6 @@
 package scene;
 
+import scene.alg.Pair;
 import scene.dnd.ImageUrlDropTargetListener;
 
 import javax.swing.*;
@@ -7,7 +8,6 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,69 +84,5 @@ public class ScenePanel extends JPanel {
         }
     }
 
-    /**
-     * User: jim
-     * Date: May 14, 2009
-     * Time: 1:00:28 AM
-     */
-    public static class CreateSceneWindow extends AbstractAction {
-
-
-        public void actionPerformed(final ActionEvent actionEvent) {
-
-            final JComboBox source = (JComboBox) actionEvent.getSource();
-
-            final Object o = source.getSelectedItem();
-            final String[] strings = o
-                    .toString().split(":");
-
-            final JInternalFrame vw = new JInternalFrame();
-
-            final JPanel iView = new ScenePanel();
-            iView.setLayout(null);
-            vw.setContentPane(iView);
-
-            final Integer w = Integer.decode(strings[0]);
-            final Integer h = Integer.decode(strings[1]);
-
-            vw.setResizable(false);
-
-
-            SceneLayoutApp.desktopPane.add(vw);
-
-            vw.show();
-            vw.setClosable(true);
-            vw.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
-
-            final Dimension dimension = new Dimension(w, h);
-            iView.setPreferredSize(dimension);
-            iView.setMaximumSize(dimension);
-
-            vw.pack();
-        }
-
-    }
 }
-/*
-<object-array>
-  <java.awt.Dimension>
-    <width>1110</width>
-    <height>720</height>
-  </java.awt.Dimension>
-  <list>
-    <scene.Pair>
-      <first class="java.awt.Point">
-        <x>-42</x>
-        <y>0</y>
-      </first>
-      <second class="url">http://6692202750809161650-a-hideftvads-com-s-sites.googlegroups.com/a/hideftvads.com/i1/Home/androidportrait.png</second>
-    </scene.Pair>
-    <scene.Pair>
-      <first class="java.awt.Point">
-        <x>378</x>
-        <y>-42</y>
-      </first>
-      <second class="url">http://sites.google.com/a/hideftvads.com/i1/Home/androidlandscape.png?attredirects=0</second>
-    </scene.Pair>
-  </list>
-</object-array>*/
+

@@ -1,11 +1,11 @@
 package scene.dnd;
 
-import scene.Pair;
 import scene.SceneLayoutApp;
 import static scene.SceneLayoutApp.XSTREAM;
 import static scene.SceneLayoutApp.permText;
 import scene.ScenePanel;
 import static scene.ScenePanel.panes;
+import scene.alg.Pair;
 
 import javax.swing.*;
 import java.awt.*;
@@ -135,7 +135,7 @@ public class ImageUrlDropTargetListener implements DropTargetListener {
                     final URL url;
                     url = res.iterator().next();
 
-                    panes.get(component).add(new scene.Pair<Point, ArrayList<URL>>(dragSpot, res));
+                    panes.get(component).add(new Pair<Point, ArrayList<URL>>(dragSpot, res));
 
                     final ArrayList<URL> uriList = res;
                     SceneLayoutApp.TIMER.schedule(new TimerTask() {
