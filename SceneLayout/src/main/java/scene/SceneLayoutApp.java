@@ -34,24 +34,59 @@ public class SceneLayoutApp {
     public SceneLayoutApp() {
         super();
 
-        final JFrame jf = new JFrame("Scene Layout");
+        final JFrame frame = new JFrame("Scene Layout");
 
 
         final JPanel panel = new JPanel(new BorderLayout());
-        jf.setContentPane(panel);
+        frame.setContentPane(panel);
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        jf.setMaximumSize(screenSize);
-        jf.setSize(screenSize);
-        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setMaximumSize(screenSize);
+        frame.setSize(screenSize);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         final JMenuBar mb = new JMenuBar();
-        jf.setJMenuBar(mb);
+        frame.setJMenuBar(mb);
 
 
         final JMenu jMenu = new JMenu("File");
         mb.add(jMenu);
         mb.add(new JMenu("Edit"));
         mb.add(new JMenu("Help"));
+               JMenu menu = new JMenu("Look and Feel");
 
+ 
+        //
+        // Get all the available look and feel that we are going to use for 
+        // creating the JMenuItem and assign the action listener to handle
+        // the selection of menu item to change the look and feel.
+        //
+        UIManager.LookAndFeelInfo[] lookAndFeelInfos = UIManager.getInstalledLookAndFeels();
+        for (int i = 0; i < lookAndFeelInfos.length; i++) {
+            final UIManager.LookAndFeelInfo lookAndFeelInfo = lookAndFeelInfos[i];
+            JMenuItem item = new JMenuItem(lookAndFeelInfo.getName());
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        //
+                        // Set the look and feel for the frame and update the UI 
+                        // to use a new selected look and feel.
+                        //
+                        UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
+                        SwingUtilities.updateComponentTreeUI(frame);
+                    } catch (ClassNotFoundException e1) {
+                        e1.printStackTrace();
+                    } catch (InstantiationException e1) {
+                        e1.printStackTrace();
+                    } catch (IllegalAccessException e1) {
+                        e1.printStackTrace();
+                    } catch (UnsupportedLookAndFeelException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            });
+            menu.add(item);
+        }
+
+        mb.add(menu);
         jMenu.add(new JMenuItem(new scene.action.QuitAction()));
 
         panel.add(new JScrollPane(desktopPane), BorderLayout.CENTER);
@@ -168,9 +203,13 @@ public class SceneLayoutApp {
             }
         });
         cmenu.add(CreateAction);
+//        JMenuBar menuBar = new JMenuBar();
+ 
 
-        dumpWindow.setJMenuBar(m);
-        jf.setVisible(true);
+//        getContentPane().add(menuBar);
+                                                           
+        dumpWindow.setJMenuBar(m);      
+        frame.setVisible(true);
     }
 
     public static final XStream XSTREAM;static {

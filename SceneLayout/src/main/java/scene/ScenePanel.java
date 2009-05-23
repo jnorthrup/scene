@@ -21,30 +21,25 @@ import java.util.WeakHashMap;
 public class ScenePanel extends JPanel {
     public static HashMap<URL, ImageIcon> images = new HashMap<URL, ImageIcon>();
     public static WeakHashMap<JPanel, java.util.List<Pair<Point, ArrayList<URL>>>> panes = new WeakHashMap<JPanel, List<Pair<Point, ArrayList<URL>>>>();
-    public final static DataFlavor[] FLAVORS;
+    public final static DataFlavor[] FLAVORS = new DataFlavor[]{
+            DataFlavor.javaFileListFlavor, 
+            new DataFlavor("application/x-java-url;class=java.net.URL", "URL"),
+            new DataFlavor("text/x-uri-list; class=java.util.List", "URI List"),
+//            new DataFlavor("text/x-java-file-list; class=java.util.List", "Java FileList"),
+            new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
+
+            new DataFlavor("text/x-moz-url; class=java.nio.ByteBuffer", "Mozilla URL"),
+            DataFlavor.imageFlavor,
+//       flavor4 new DataFlavor("image/x-java-image; class=java.util.List", "URI List"),
+            /*      new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
+                    new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
+                    new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
+            */
+    };
 
     static {
 
 
-        DataFlavor flavor = new DataFlavor("application/x-java-url;class=java.net.URL", "URL");
-        DataFlavor flavor1 = new DataFlavor("text/x-uri-list; class=java.util.List", "URI List");
-        DataFlavor flavor2 = new DataFlavor("text/x-java-file-list; class=java.util.List", "Java FileList");
-        DataFlavor flavor3 = new DataFlavor("text/uri-list; class=java.util.List", "URI List");
-        DataFlavor flavor4 = new DataFlavor("text/x-moz-url; class=java.nio.ByteBuffer", "Mozilla URL");
-        FLAVORS = new DataFlavor[]{
-                flavor,
-                flavor1,
-                flavor2,
-                flavor3,
-
-                flavor4,
-
-//       flavor4 new DataFlavor("image/x-java-image; class=java.util.List", "URI List"),
-                /*      new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
-                        new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
-                        new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
-                */
-        };
     }
 
     {

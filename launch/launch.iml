@@ -9,6 +9,7 @@
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
         </webroots>
+        <sourceRoots />
         <building>
           <setting name="EXPLODED_URL" value="file://$MODULE_DIR$/target/launch" />
           <setting name="EXPLODED_ENABLED" value="false" />

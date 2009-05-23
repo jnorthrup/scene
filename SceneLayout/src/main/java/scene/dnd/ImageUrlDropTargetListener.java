@@ -1,27 +1,20 @@
 package scene.dnd;
 
-import scene.SceneLayoutApp;
-import static scene.SceneLayoutApp.XSTREAM;
-import static scene.SceneLayoutApp.permText;
-import scene.ScenePanel;
-import static scene.ScenePanel.panes;
-import scene.alg.Pair;
+import scene.*;
+import static scene.SceneLayoutApp.*;
+import static scene.ScenePanel.*;
+import scene.alg.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.datatransfer.*;
 import java.awt.dnd.*;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.TimerTask;
+import java.io.*;
+import java.net.*;
+import java.nio.*;
+import java.nio.charset.*;
+import java.util.*;
+import java.util.List;
 
 /**
  * User: jim
@@ -81,18 +74,40 @@ public class ImageUrlDropTargetListener implements DropTargetListener {
         // important to first try uriListFlavor
 
 
-        ArrayList<URL> res = null;
+        ArrayList<URL> res = new ArrayList<URL>(1);
         Transferable transferable = event.getTransferable();
 
         for (DataFlavor flavor : ScenePanel.FLAVORS) {
             if (transferable.isDataFlavorSupported(flavor)) {
                 String str;
-                if (!flavor.getRepresentationClass().isAssignableFrom(Iterable.class)) {
+                if (flavor.getRepresentationClass().isAssignableFrom(List.class)) {
+                    try {
+                        event.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+                        final List data = (List) transferable.getTransferData(flavor);
+                        for (final Object o : data) {
+                            final URL u;
+                            if (o instanceof File) {
+                                
+                                u = ((((File) o).toURI().toURL()));
+                            } else {
+
+                                str = String.valueOf(o);
+                                u = URI.create(str).toURL();
+                            }
+                            res.add(u);
+
+                        }
+                    } catch (UnsupportedFlavorException e) {
+                        e.printStackTrace();   
+                    } catch (IOException e) {
+                        e.printStackTrace();   
+                    }
+                } else {
                     try {
                         event.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 
                         Object data = transferable.getTransferData(flavor);
-
+                        URL u = null;
                         if (data instanceof ByteBuffer) {
                             ByteBuffer buffer = (ByteBuffer) data;
                             /* if (buffer.get(0) == 0 || buffer.get(1) == 0) {
@@ -100,29 +115,17 @@ public class ImageUrlDropTargetListener implements DropTargetListener {
                            } else*/
                             CharBuffer charBuffer = buffer.order(ByteOrder.nativeOrder()).asCharBuffer();
 
-                            char c = charBuffer.get();
-                            while (charBuffer.hasRemaining() && !java.lang.Character.isWhitespace(c = charBuffer.get()) && c > 1)
-                                ;
+                            char c ;//= charBuffer.get();
+                            while (charBuffer.hasRemaining() && !Character.isWhitespace(c = charBuffer.get()) && c > 1) ;
                             str = charBuffer.limit(charBuffer.position() - 1).position(0).toString();
 
                         } else
+                        if (data instanceof File)
+                            u =  ((File) data).toURI().toURL( );
+                        else
+                            u = URI.create(String.valueOf(data)).toURL();
 
-                            str = String.valueOf(data);
-                        (res = new ArrayList<URL>(1)).add(new URL(str));
-                    } catch (UnsupportedFlavorException e) {
-                        e.printStackTrace();  //TODO: verify for a purpose
-                    } catch (IOException e) {
-                        e.printStackTrace();  //TODO: verify for a purpose
-                    }
-                } else {
-                    try {
-                        ArrayList<URL> ar = new ArrayList<URL>();
-                        for (Object o : (Iterable<?>) transferable.getTransferData(flavor)) {
-                            str = String.valueOf(o);
-                            URL u = new URL(str);
-                            ar.add(u);
-                            res = ar;
-                        }
+                        (res/* = new ArrayList<URL>(1)*/).add(u);
                     } catch (UnsupportedFlavorException e) {
                         e.printStackTrace();  //TODO: verify for a purpose
                     } catch (IOException e) {
@@ -131,7 +134,8 @@ public class ImageUrlDropTargetListener implements DropTargetListener {
                 }
                 System.err.println("dump: " + String.valueOf(res));
 
-                if (res != null) {
+
+                if (res != null && !res.isEmpty()) {
                     final URL url;
                     url = res.iterator().next();
 
@@ -146,7 +150,7 @@ public class ImageUrlDropTargetListener implements DropTargetListener {
                                 urlConnection = url.openConnection();
 
                             } catch (IOException e) {
-                                e.printStackTrace();  //TODO: Verify for a purpose
+                                e.printStackTrace();
                             }
                             assert urlConnection != null;
                             System.err.println(urlConnection.getContentType());
@@ -174,7 +178,7 @@ public class ImageUrlDropTargetListener implements DropTargetListener {
                     };
 
                     SceneLayoutApp.TIMER.schedule(timerTask, 250);
-
+                    return;
                 }
                 return;
             }
