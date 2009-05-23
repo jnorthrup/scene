@@ -126,8 +126,7 @@ public class ImageUrlDropTargetListener implements DropTargetListener {
                             CharBuffer charBuffer = buffer.order(ByteOrder.nativeOrder()).asCharBuffer();
 
                             char c;//= charBuffer.get();
-                            while (charBuffer.hasRemaining() && !Character.isWhitespace(c = charBuffer.get()) && c > 1)
-                                ;
+                            while (charBuffer.hasRemaining() && !Character.isWhitespace(c = charBuffer.get()) && c > 1)                                ;
                             str = charBuffer.limit(charBuffer.position() - 1).position(0).toString();
                             u = URI.create(str).toURL();
                         } else if (data instanceof File)

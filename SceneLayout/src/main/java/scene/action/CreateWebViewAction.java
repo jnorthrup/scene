@@ -13,9 +13,9 @@ import java.awt.event.ActionEvent;
  * Date: May 17, 2009
  * Time: 12:51:29 AM
  */
-public class CreateWebView extends AbstractAction {
+public class CreateWebViewAction extends AbstractAction {
 
-    public CreateWebView() {
+    public CreateWebViewAction() {
         super("Web");
     }
 

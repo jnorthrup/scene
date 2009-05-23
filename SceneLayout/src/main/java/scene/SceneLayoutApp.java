@@ -2,7 +2,7 @@ package scene;
 
 import com.thoughtworks.xstream.XStream;
 import scene.action.CreateSceneWindowAction;
-import scene.action.CreateWebView;
+import scene.action.CreateWebViewAction;
 import scene.alg.Pair;
 import scene.anim.ProgressBarAnimator;
 import scene.anim.SliderBarAnimator;
@@ -153,7 +153,7 @@ public class SceneLayoutApp {
 
 
         permaViz.setSelected(false);
-        bar.add(new CreateWebView());
+        bar.add(new CreateWebViewAction());
         bar.add(permaViz);
         desktopPane.add(dumpWindow);
         dumpWindow.setSize(400, 400);
