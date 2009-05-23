@@ -9,7 +9,6 @@
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
         </webroots>
-        <sourceRoots />
         <building>
           <setting name="EXPLODED_URL" value="file://$MODULE_DIR$/target/launch" />
           <setting name="EXPLODED_ENABLED" value="false" />
@@ -24,7 +23,7 @@
           </containerElement>
           <containerElement type="module" name="SceneLayout">
             <attribute name="method" value="5" />
-            <attribute name="URI" value="/WEB-INF/lib/SceneLayout-0.0.5.jar" />
+            <attribute name="URI" value="/WEB-INF/lib/SceneLayout-0.0.6.jar" />
           </containerElement>
           <containerElement type="library" name="Maven: commons-logging:commons-logging:1.0.4" level="project">
             <attribute name="method" value="1" />

@@ -1,20 +1,30 @@
 package scene.dnd;
 
-import scene.*;
-import static scene.SceneLayoutApp.*;
-import static scene.ScenePanel.*;
-import scene.alg.*;
+import scene.SceneLayoutApp;
+import static scene.SceneLayoutApp.XSTREAM;
+import static scene.SceneLayoutApp.permText;
+import scene.ScenePanel;
+import static scene.ScenePanel.panes;
+import scene.alg.Pair;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
-import java.io.*;
-import java.net.*;
-import java.nio.*;
-import java.nio.charset.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 
 /**
  * User: jim
@@ -87,7 +97,7 @@ public class ImageUrlDropTargetListener implements DropTargetListener {
                         for (final Object o : data) {
                             final URL u;
                             if (o instanceof File) {
-                                
+
                                 u = ((((File) o).toURI().toURL()));
                             } else {
 
@@ -98,9 +108,9 @@ public class ImageUrlDropTargetListener implements DropTargetListener {
 
                         }
                     } catch (UnsupportedFlavorException e) {
-                        e.printStackTrace();   
+                        e.printStackTrace();
                     } catch (IOException e) {
-                        e.printStackTrace();   
+                        e.printStackTrace();
                     }
                 } else {
                     try {
@@ -115,13 +125,13 @@ public class ImageUrlDropTargetListener implements DropTargetListener {
                            } else*/
                             CharBuffer charBuffer = buffer.order(ByteOrder.nativeOrder()).asCharBuffer();
 
-                            char c ;//= charBuffer.get();
-                            while (charBuffer.hasRemaining() && !Character.isWhitespace(c = charBuffer.get()) && c > 1) ;
+                            char c;//= charBuffer.get();
+                            while (charBuffer.hasRemaining() && !Character.isWhitespace(c = charBuffer.get()) && c > 1)
+                                ;
                             str = charBuffer.limit(charBuffer.position() - 1).position(0).toString();
-
-                        } else
-                        if (data instanceof File)
-                            u =  ((File) data).toURI().toURL( );
+                            u = URI.create(str).toURL();
+                        } else if (data instanceof File)
+                            u = ((File) data).toURI().toURL();
                         else
                             u = URI.create(String.valueOf(data)).toURL();
 
@@ -141,7 +151,6 @@ public class ImageUrlDropTargetListener implements DropTargetListener {
 
                     panes.get(component).add(new Pair<Point, ArrayList<URL>>(dragSpot, res));
 
-                    final ArrayList<URL> uriList = res;
                     SceneLayoutApp.TIMER.schedule(new TimerTask() {
                         @Override
                         public void run() {
