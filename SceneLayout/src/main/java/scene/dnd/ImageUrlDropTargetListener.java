@@ -169,7 +169,7 @@ public class ImageUrlDropTargetListener implements DropTargetListener {
                     ImageIcon icon = null;
                     icon = new ImageIcon(url);
 
-                    ScenePanel.images.put(url, icon);
+                    component.images.put(url, icon);
 
                     final java.util.List<Pair<Point, ArrayList<URL>>> pairs = panes.get(component);
 

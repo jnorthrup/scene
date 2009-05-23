@@ -23,7 +23,7 @@ public class WebAnimUrlTextAction implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            webViewDropTargetListener.updateEditor(new URL(webViewDropTargetListener.getFrame().getUrlText().getText()));
+            this.webViewDropTargetListener.frame.updateEditor(new URL(webViewDropTargetListener.getFrame().getUrlText().getText()));
         } catch (Exception ignored) {
         }
     }

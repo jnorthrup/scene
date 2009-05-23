@@ -12,6 +12,7 @@ import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class SceneLayoutApp {
     public static final JTextPane permText = new JTextPane();
     public static final Timer TIMER = new Timer();
 
-    public final static JDesktopPane desktopPane = new JDesktopPane();
+    public final static JDesktopPane desktopPane;
     private static SceneLayoutApp instance;
     public static ExecutorService threadPool = Executors.newCachedThreadPool();
 
@@ -51,9 +52,9 @@ public class SceneLayoutApp {
         mb.add(jMenu);
         mb.add(new JMenu("Edit"));
         mb.add(new JMenu("Help"));
-               JMenu menu = new JMenu("Look and Feel");
+        JMenu menu = new JMenu("Look and Feel");
 
- 
+
         //
         // Get all the available look and feel that we are going to use for 
         // creating the JMenuItem and assign the action listener to handle
@@ -204,17 +205,45 @@ public class SceneLayoutApp {
         });
         cmenu.add(CreateAction);
 //        JMenuBar menuBar = new JMenuBar();
- 
+
 
 //        getContentPane().add(menuBar);
-                                                           
-        dumpWindow.setJMenuBar(m);      
+
+        dumpWindow.setJMenuBar(m);
         frame.setVisible(true);
+
     }
 
-    public static final XStream XSTREAM;static {
+    public static final XStream XSTREAM;
+
+    static {
         XSTREAM = new XStream();
 //        XSTREAM.aliasType( "triple", Triple.class);
+        desktopPane = new JDesktopPane() {
+            final JEditorPane ed = new JEditorPane();
+
+            {   setOpaque(false);
+                try {
+                          ed.setOpaque(true);
+                    ed.setBackground(Color.black);
+                    ed.setPage("http://www.hideftvads.com");
+                    ed.setEditable(false);
+                    ed.setEnabled(false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void paint(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g;
+                ed.setSize(getSize());
+                ed.paint(g);
+                               super.paint(g);
+            }
+
+        };
     }
 
     static public void main(String[] args) {

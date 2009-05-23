@@ -6,7 +6,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
   <groupId>hideftvads</groupId>
   <artifactId>gui-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.0.6</version>
+  <version>0.0.7</version>
   <name>gui-parent</name>
   <url>http://maven.apache.org</url>
   <dependencies>

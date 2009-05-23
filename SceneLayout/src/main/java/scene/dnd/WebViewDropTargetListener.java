@@ -9,8 +9,6 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -29,7 +27,7 @@ import java.util.Collection;
 public class WebViewDropTargetListener implements DropTargetListener {
 
     private static final Charset UTF16 = Charset.forName("UTF16");
-    private final WebAnimator frame;
+    public final WebAnimator frame;
 
     public WebViewDropTargetListener(WebAnimator
             frame) {
@@ -141,45 +139,13 @@ public class WebViewDropTargetListener implements DropTargetListener {
                 if (res != null) {
                     URL url = res.iterator().next();
                     frame.setTitle(url.toExternalForm());
-                    updateEditor(url);
+                    frame.updateEditor(url);
                 }
                 return;
             }
         }
     }
 
-
-    public void updateEditor(URL url) {
-        if (url != null) {
-            try {
-                frame.getJEditorPane().setPage(url.toExternalForm());
-            } catch (IOException e) {
-                System.err.println("Attempted to read a bad URL: " + url.toExternalForm());
-            }
-        } else {
-            System.err.println("Couldn't find file: " + url.toExternalForm());
-        }
-        frame.getUrlText().setText(url.toExternalForm());
-        try {
-            final ImageIcon icon;
-            Dimension viewSize = frame.getContentPane().getSize();
-            frame.getContentPane().setPreferredSize(viewSize);
-
-            int v = (int) viewSize.getHeight();
-            URL url1 = new URL("http://chart.apis.google.com/chart?cht=qr&chs=" + v + "&chl=" + url.toString());
-            icon = new ImageIcon(url1);
-
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    frame.getQrCode().setIcon(icon);
-                    frame.getQrCode().invalidate();
-                    frame.getQrCode().repaint();
-                }
-            });
-        } catch (MalformedURLException ignored) {
-        }
-    }
 
     public WebAnimator getFrame() {
         return frame;

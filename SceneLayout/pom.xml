@@ -6,7 +6,7 @@
     <parent>
         <artifactId>gui-parent</artifactId>
         <groupId>hideftvads</groupId>
-        <version>0.0.6</version>
+        <version>0.0.7</version>
     </parent>
     <groupId>hideftvads</groupId>
     <artifactId>SceneLayout</artifactId>

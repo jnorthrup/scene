@@ -19,7 +19,7 @@ import java.util.WeakHashMap;
  * Time: 7:14:43 AM
  */
 public class ScenePanel extends JPanel {
-    public static HashMap<URL, ImageIcon> images = new HashMap<URL, ImageIcon>();
+    public   HashMap<URL, ImageIcon> images = new HashMap<URL, ImageIcon>();
     public static WeakHashMap<JPanel, java.util.List<Pair<Point, ArrayList<URL>>>> panes = new WeakHashMap<JPanel, List<Pair<Point, ArrayList<URL>>>>();
     public final static DataFlavor[] FLAVORS = new DataFlavor[]{
             DataFlavor.javaFileListFlavor, 
@@ -46,7 +46,7 @@ public class ScenePanel extends JPanel {
         panes.put(this, new ArrayList<Pair<Point, ArrayList<URL>>>());
 
         this.setDropTarget(new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, new ImageUrlDropTargetListener(), true));
-    }
+  this.setToolTipText("<html><h1>Scene Layout</h1><p>Drop image files and browser images onto this canvas.");  }
 
     @Override
     public void paint(Graphics g) {
@@ -62,7 +62,8 @@ public class ScenePanel extends JPanel {
 
             ImageIcon icon = images.get(pair.$2());
             if (icon == null) {
-                URL uri = pair.$2().iterator().next();
+                final ArrayList<URL> urlArrayList = pair.$2();
+                URL uri = urlArrayList.iterator().next();
                 images.put(uri, icon = new ImageIcon(uri));
             }
             final int loadStatus = icon.getImageLoadStatus();
