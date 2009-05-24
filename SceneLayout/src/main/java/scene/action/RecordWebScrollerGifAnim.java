@@ -20,10 +20,10 @@ import java.util.concurrent.TimeUnit;
  * Date: May 21, 2009
  * Time: 1:28:00 PM
  */
-public class RecordWebScrollerAction extends AbstractAction {
+public class RecordWebScrollerGifAnim extends AbstractAction {
     private WebAnimator webAnimator;
 
-    public RecordWebScrollerAction(WebAnimator webAnimator) {
+    public RecordWebScrollerGifAnim(WebAnimator webAnimator) {
         super("Record");
         this.webAnimator = webAnimator;
     }
@@ -36,8 +36,11 @@ public class RecordWebScrollerAction extends AbstractAction {
 
         final Adjustable slider = webAnimator.getJScrollPane().getVerticalScrollBar();
 
+        final int iend = (int) webAnimator.stopSlider.getValue();
+        final int beg = webAnimator.startSlider.getValue();
+        final boolean custom = iend>beg/*beg == end*/;
 
-        slider.setValue(slider.getMinimum());
+        slider.setValue(custom ? webAnimator.startSlider.getValue() : slider.getMinimum());
         try {
             engine.exchange(null, 1, TimeUnit.NANOSECONDS);
         } catch (Exception ignored) {
@@ -50,7 +53,7 @@ public class RecordWebScrollerAction extends AbstractAction {
                 } catch (Exception e1) {
                 }
                 BufferedImage image = null;
-                double end = 0.9 * slider.getMaximum();
+                final double end = custom?iend:slider.getMaximum();
                 while (slider.getValue() < end) {
 
 
@@ -72,8 +75,7 @@ public class RecordWebScrollerAction extends AbstractAction {
 
                 try {
                     engine.exchange(null);
-                } catch (InterruptedException e1) {
-                    return;
+                } catch (InterruptedException ignored) {
                 }
 
             }
@@ -111,3 +113,4 @@ public class RecordWebScrollerAction extends AbstractAction {
         }
     }
 }
+

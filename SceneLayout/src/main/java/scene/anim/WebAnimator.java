@@ -1,26 +1,23 @@
 package scene.anim;
 
-import scene.action.RecordWebScrollerAction;
+import scene.action.RecordWebScrollerGifAnim;
 import scene.dnd.WebViewDropTargetListener;
-import scene.SceneLayoutApp;
-import static scene.SceneLayoutApp.permText;
 
 import javax.swing.*;
-import javax.swing.event.ChangeListener;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
-import java.awt.event.HierarchyBoundsListener;
-import java.awt.event.HierarchyEvent;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 
 /**
  * Copyright hideftvads.com 2009 all rights reserved.
@@ -41,17 +38,10 @@ public class WebAnimator extends JInternalFrame {
             DataFlavor.javaFileListFlavor,
             new DataFlavor("application/x-java-url;class=java.net.URL", "URL"),
             new DataFlavor("text/x-uri-list; class=java.util.List", "URI List"),
-            //            new DataFlavor("text/x-java-file-list; class=java.util.List", "Java FileList"),
             new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
-//
-//                                new DataFlavor("text/x-moz-url; class=java.lang.String", "Mozilla URL"),
-//                                DataFlavor.imageFlavor,
-            //       flavor4 new DataFlavor("image/x-java-image; class=java.util.List", "URI List"),
-            /*      new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
-                    new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
-                    new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
-            */
     };
+    public JSlider startSlider = new JSlider();
+    public JSlider stopSlider = new JSlider();
 
     public WebAnimator(Object... a) {
         super("Create Web Animation");
@@ -67,32 +57,51 @@ public class WebAnimator extends JInternalFrame {
         bar.add(urlText);
         content.add(panel, BorderLayout.CENTER);
         content.add(bar, BorderLayout.NORTH);
-        final JToolBar startStopTools = new JToolBar();
-        final JScrollBar jScrollBar = jScrollPane.createVerticalScrollBar();
-        content.add(jScrollBar, BorderLayout.WEST); 
-             jEditorPane
-                     .addPropertyChangeListener(new PropertyChangeListener() {
-                         @Override
-                         public void propertyChange(PropertyChangeEvent evt) {
-                             permText.setText (permText.getText()+"\n++ eee:"+evt.getPropertyName()+":"+
-                                     evt.getOldValue()+":"+ evt.getNewValue());
-                         }
-                     });
+
+        final TitledBorder border1 = BorderFactory.createTitledBorder("Beg");
+        startSlider.setBorder(border1);
+                startSlider.setOrientation(SwingConstants.VERTICAL);
+                startSlider.setInverted(true);
+
+        final TitledBorder border2 = BorderFactory.createTitledBorder("End");
+        stopSlider.setBorder(border2);
+                stopSlider.setOrientation(SwingConstants.VERTICAL);
+                stopSlider.setInverted(true);
+        
+        final JSplitPane jSplitPane = new JSplitPane(SwingConstants.VERTICAL, startSlider, stopSlider);
+        content.add( jSplitPane, BorderLayout.WEST);
+//        
+
+        final JScrollBar verticalScrollBar = jScrollPane.getVerticalScrollBar();
+        final AdjustmentListener[] listeners = verticalScrollBar.getAdjustmentListeners();
+
+        verticalScrollBar.addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+                startSlider.setMaximum(verticalScrollBar.getMaximum()-verticalScrollBar.getModel().getExtent());
+//                     startSlider.setExtent(verticalScrollBar.getModel().getExtent());
+                stopSlider.setMaximum(verticalScrollBar.getMaximum()-verticalScrollBar.getModel().getExtent());
+//                     stopSlider.setExtent(verticalScrollBar.getModel().getExtent());
+                       }
+        });
+
+        startSlider.addChangeListener(new MyChangeListener(verticalScrollBar));
+        stopSlider.addChangeListener(new MyChangeListener(verticalScrollBar));
 
 
         setContentPane(content);
         final JInternalFrame f = this;
 
-        bar.add(new RecordWebScrollerAction(this) {{
+        bar.add(new RecordWebScrollerGifAnim(this) {{
             setToolTipText("Record a scrolling view of the contents in the window you have sized and shaped"
             );
         }});
-//                f.setPreferredSize(getPreferredSize());
+        // f.setPreferredSize(getPreferredSize());
         f.setMaximizable(true);
         f.setClosable(true);
         f.setIconifiable(true);
         f.setResizable(true);
-        f.setToolTipText("This window creates a small barcoded banner from a genuine html web link");
+        f.setToolTipText("This window creates a small barcoded banner from an html web link");
         urlText.setToolTipText("Enter a URL here and hit enter to update the layouts");
         bar.setToolTipText("Press Record to create a scrolling banner in the sizes of the layouts in this view.  Record will save an animated gif file.");
 
@@ -102,10 +111,6 @@ public class WebAnimator extends JInternalFrame {
         new DropTarget(qrCode, DnDConstants.ACTION_COPY_OR_MOVE,
                 new DropTargetListener() {
                     /**
-                     * Called while a drag operation is ongoing, when the mouse pointer enters
-                     * the operable part of the drop site for the <code>DropTarget</code>
-                     * registered with this listener.
-                     *
                      * @param dtde the <code>DropTargetDragEvent</code>
                      */
                     @Override
@@ -113,90 +118,27 @@ public class WebAnimator extends JInternalFrame {
                         for (DataFlavor dataFlavor : dataFlavors) {
 
                             if (dtde.isDataFlavorSupported(dataFlavor)) {
-                                return ;
-
+                                return;
                             }
                         }
                         dtde.rejectDrag();
                     }
 
-                    /**
-                     * Called when a drag operation is ongoing, while the mouse pointer is still
-                     * over the operable part of the drop site for the <code>DropTarget</code>
-                     * registered with this listener.
-                     *
-                     * @param dtde the <code>DropTargetDragEvent</code>
-                     */
                     @Override
                     public void dragOver(DropTargetDragEvent dtde) {
                         //To change body of implemented methods use File | Settings | File Templates.
                     }
 
-                    /**
-                     * Called if the user has modified
-                     * the current drop gesture.
-                     * <p/>
-                     *
-                     * @param dtde the <code>DropTargetDragEvent</code>
-                     */
                     @Override
                     public void dropActionChanged(DropTargetDragEvent dtde) {
                         //To change body of implemented methods use File | Settings | File Templates.
                     }
 
-                    /**
-                     * Called while a drag operation is ongoing, when the mouse pointer has
-                     * exited the operable part of the drop site for the
-                     * <code>DropTarget</code> registered with this listener.
-                     *
-                     * @param dte the <code>DropTargetEvent</code>
-                     */
                     @Override
                     public void dragExit(DropTargetEvent dte) {
                         //To change body of implemented methods use File | Settings | File Templates.
                     }
 
-                    /**
-                     * Called when the drag operation has terminated with a drop on
-                     * the operable part of the drop site for the <code>DropTarget</code>
-                     * registered with this listener.
-                     * <p/>
-                     * This method is responsible for undertaking
-                     * the transfer of the data associated with the
-                     * gesture. The <code>DropTargetDropEvent</code>
-                     * provides a means to obtain a <code>Transferable</code>
-                     * object that represents the data object(s) to
-                     * be transfered.<P>
-                     * From this method, the <code>DropTargetListener</code>
-                     * shall accept or reject the drop via the
-                     * acceptDrop(int dropAction) or rejectDrop() methods of the
-                     * <code>DropTargetDropEvent</code> parameter.
-                     * <p/>
-                     * Subsequent to acceptDrop(), but not before,
-                     * <code>DropTargetDropEvent</code>'s getTransferable()
-                     * method may be invoked, and data transfer may be
-                     * performed via the returned <code>Transferable</code>'s
-                     * getTransferData() method.
-                     * <p/>
-                     * At the completion of a drop, an implementation
-                     * of this method is required to signal the success/failure
-                     * of the drop by passing an appropriate
-                     * <code>boolean</code> to the <code>DropTargetDropEvent</code>'s
-                     * dropComplete(boolean success) method.
-                     * <p/>
-                     * Note: The data transfer should be completed before the call  to the
-                     * <code>DropTargetDropEvent</code>'s dropComplete(boolean success) method.
-                     * After that, a call to the getTransferData() method of the
-                     * <code>Transferable</code> returned by
-                     * <code>DropTargetDropEvent.getTransferable()</code> is guaranteed to
-                     * succeed only if the data transfer is local; that is, only if
-                     * <code>DropTargetDropEvent.isLocalTransfer()</code> returns
-                     * <code>true</code>. Otherwise, the behavior of the call is
-                     * implementation-dependent.
-                     * <p/>
-                     *
-                     * @param dtde the <code>DropTargetDropEvent</code>
-                     */
                     @Override
                     public void drop(DropTargetDropEvent dtde) {
                         for (DataFlavor flavor : dataFlavors) {
@@ -316,6 +258,22 @@ public class WebAnimator extends JInternalFrame {
                     getQrCode().repaint();
                 }
             });
-        } catch (MalformedURLException ignored) {          }
+        } catch (MalformedURLException ignored) {
+        }
+    }
+
+    private static class MyChangeListener implements ChangeListener {
+        private final JScrollBar verticalScrollBar;
+
+        public MyChangeListener(JScrollBar verticalScrollBar) {
+            this.verticalScrollBar = verticalScrollBar;
+        }
+
+        @Override
+            public void stateChanged(ChangeEvent e) {
+            final int value = ((JSlider) e.getSource()).getValue();
+            verticalScrollBar.setValue(value);
+
+        }
     }
 }
