@@ -224,7 +224,7 @@ public class SceneLayoutApp {
 
             {   setOpaque(false);
                 try {
-                          ed.setOpaque(true);
+                          ed.setOpaque(false);
                     ed.setBackground(Color.black);
                     ed.setPage("http://www.hideftvads.com");
                     ed.setEditable(false);

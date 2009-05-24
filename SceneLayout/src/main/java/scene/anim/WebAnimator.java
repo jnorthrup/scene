@@ -2,17 +2,25 @@ package scene.anim;
 
 import scene.action.RecordWebScrollerAction;
 import scene.dnd.WebViewDropTargetListener;
+import scene.SceneLayoutApp;
+import static scene.SceneLayoutApp.permText;
 
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
-import java.io.IOException;
+import java.awt.event.HierarchyBoundsListener;
+import java.awt.event.HierarchyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 /**
  * Copyright hideftvads.com 2009 all rights reserved.
@@ -29,6 +37,21 @@ public class WebAnimator extends JInternalFrame {
     private JPanel content = new JPanel(new BorderLayout());
     private JEditorPane jEditorPane = new JEditorPane();
     private JScrollPane jScrollPane = new JScrollPane(jEditorPane);
+    private DataFlavor[] dataFlavors = new DataFlavor[]{
+            DataFlavor.javaFileListFlavor,
+            new DataFlavor("application/x-java-url;class=java.net.URL", "URL"),
+            new DataFlavor("text/x-uri-list; class=java.util.List", "URI List"),
+            //            new DataFlavor("text/x-java-file-list; class=java.util.List", "Java FileList"),
+            new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
+//
+//                                new DataFlavor("text/x-moz-url; class=java.lang.String", "Mozilla URL"),
+//                                DataFlavor.imageFlavor,
+            //       flavor4 new DataFlavor("image/x-java-image; class=java.util.List", "URI List"),
+            /*      new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
+                    new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
+                    new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
+            */
+    };
 
     public WebAnimator(Object... a) {
         super("Create Web Animation");
@@ -44,12 +67,25 @@ public class WebAnimator extends JInternalFrame {
         bar.add(urlText);
         content.add(panel, BorderLayout.CENTER);
         content.add(bar, BorderLayout.NORTH);
+        final JToolBar startStopTools = new JToolBar();
+        final JScrollBar jScrollBar = jScrollPane.createVerticalScrollBar();
+        content.add(jScrollBar, BorderLayout.WEST); 
+             jEditorPane
+                     .addPropertyChangeListener(new PropertyChangeListener() {
+                         @Override
+                         public void propertyChange(PropertyChangeEvent evt) {
+                             permText.setText (permText.getText()+"\n++ eee:"+evt.getPropertyName()+":"+
+                                     evt.getOldValue()+":"+ evt.getNewValue());
+                         }
+                     });
+
+
         setContentPane(content);
         final JInternalFrame f = this;
 
         bar.add(new RecordWebScrollerAction(this) {{
-            setToolTipText("Record a scrolling view of the contents in the window you have sized and shaped" +
-                    "");
+            setToolTipText("Record a scrolling view of the contents in the window you have sized and shaped"
+            );
         }});
 //                f.setPreferredSize(getPreferredSize());
         f.setMaximizable(true);
@@ -74,9 +110,12 @@ public class WebAnimator extends JInternalFrame {
                      */
                     @Override
                     public void dragEnter(DropTargetDragEvent dtde) {
+                        for (DataFlavor dataFlavor : dataFlavors) {
 
-                        if (dtde.isDataFlavorSupported(DataFlavor.imageFlavor)) {
-                            return;
+                            if (dtde.isDataFlavorSupported(dataFlavor)) {
+                                return ;
+
+                            }
                         }
                         dtde.rejectDrag();
                     }
@@ -160,21 +199,7 @@ public class WebAnimator extends JInternalFrame {
                      */
                     @Override
                     public void drop(DropTargetDropEvent dtde) {
-                        for (DataFlavor flavor : new DataFlavor[]{
-                                DataFlavor.javaFileListFlavor,
-                                new DataFlavor("application/x-java-url;class=java.net.URL", "URL"),
-                                new DataFlavor("text/x-uri-list; class=java.util.List", "URI List"),
-                    //            new DataFlavor("text/x-java-file-list; class=java.util.List", "Java FileList"),
-                                new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
-//
-//                                new DataFlavor("text/x-moz-url; class=java.lang.String", "Mozilla URL"),
-//                                DataFlavor.imageFlavor,
-                    //       flavor4 new DataFlavor("image/x-java-image; class=java.util.List", "URI List"),
-                                /*      new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
-                                        new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
-                                        new DataFlavor("text/uri-list; class=java.util.List", "URI List"),
-                                */
-                        }) {
+                        for (DataFlavor flavor : dataFlavors) {
 
                             if (dtde.isDataFlavorSupported(flavor)) {
 
@@ -197,14 +222,15 @@ public class WebAnimator extends JInternalFrame {
 
                                 }
 
-                                if(data!=null){
-                                    if (!(data instanceof File)) { } else {
-                                    try {
-                                        data= ((File)data).toURI().toURL() ;
-                                    } catch (MalformedURLException e) {
-                                        e.printStackTrace();
+                                if (data != null) {
+                                    if (!(data instanceof File)) {
+                                    } else {
+                                        try {
+                                            data = ((File) data).toURI().toURL();
+                                        } catch (MalformedURLException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
                                 }
                                 icon.setImage(Toolkit.getDefaultToolkit().
                                         createImage(String.valueOf(data)));
@@ -264,14 +290,13 @@ public class WebAnimator extends JInternalFrame {
     }
 
     public void updateEditor(URL url) {
-        if (url != null) {
-            try {
-                getJEditorPane().setPage(url.toExternalForm());
-            } catch (IOException e) {
-                System.err.println("Attempted to read a bad URL: " + url.toExternalForm());
-            }
-        } else {
-            System.err.println("Couldn't find file: " + url.toExternalForm());
+        if (url == null) {
+            return;
+        }
+        try {
+            getJEditorPane().setPage(url.toExternalForm());
+        } catch (IOException e) {
+            System.err.println("Attempted to read a bad URL: " + url.toExternalForm());
         }
         getUrlText().setText(url.toExternalForm());
         try {
@@ -291,7 +316,6 @@ public class WebAnimator extends JInternalFrame {
                     getQrCode().repaint();
                 }
             });
-        } catch (MalformedURLException ignored) {
-        }
+        } catch (MalformedURLException ignored) {          }
     }
 }
