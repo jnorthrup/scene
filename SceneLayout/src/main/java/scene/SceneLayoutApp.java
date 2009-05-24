@@ -240,7 +240,7 @@ public class SceneLayoutApp {
                 Graphics2D g2 = (Graphics2D) g;
                 ed.setSize(getSize());
                 ed.paint(g);
-                               super.paint(g);
+                super.paint(g);
             }
 
         };

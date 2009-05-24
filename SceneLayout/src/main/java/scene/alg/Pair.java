@@ -31,21 +31,23 @@ public class Pair<$1, $2> {
 
     }
 
-    public $1 $1($1 $1) {
-        return
-                v.length > 1 ?
-                        ($1) (v[0] = $1)
-                        : ($1) (this.v = new Object[]
-                        {$1, $2()})[0];
+    public Pair<$1, $2> $1($1 $1) {
+
+        final $1 $11 = v.length > 1 ?
+                ($1) (v[0] = $1)
+                : ($1) (this.v = new Object[]
+                {$1, $2()})[0];
+        return this;
 
     }
 
-    public $2 $2($2 $2) {
-        return
-                v.length > 1 ?
-                        ($2) (v[1] = $2)
-                        : ($2) (this.v = new Object[]
-                        {$1(), $2})[1];
+    public Pair<$1, $2> $2($2 $2) {
+
+        final $2 $21 = v.length > 1 ?
+                ($2) (v[1] = $2)
+                : ($2) (this.v = new Object[]
+                {$1(), $2})[1];
+        return this;
 
     }
 

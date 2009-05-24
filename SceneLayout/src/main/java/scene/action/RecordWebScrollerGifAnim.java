@@ -24,7 +24,7 @@ public class RecordWebScrollerGifAnim extends AbstractAction {
     private WebAnimator webAnimator;
 
     public RecordWebScrollerGifAnim(WebAnimator webAnimator) {
-        super("Record");
+        super(">.gif");
         this.webAnimator = webAnimator;
     }
 

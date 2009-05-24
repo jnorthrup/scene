@@ -5,13 +5,20 @@ import scene.anim.WebAnimator;
 import scene.gif.AnimatedGifEncoder;
 
 import javax.swing.*;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOError;
+import java.io.IOException;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Copyright hideftvads.com 2009 all rights reserved.
@@ -24,7 +31,7 @@ public class RecordWebScrollerPngDir extends AbstractAction {
     private WebAnimator webAnimator;
 
     public RecordWebScrollerPngDir(WebAnimator webAnimator) {
-        super("Record");
+        super(">.png");
         this.webAnimator = webAnimator;
     }
 
@@ -36,8 +43,11 @@ public class RecordWebScrollerPngDir extends AbstractAction {
 
         final Adjustable slider = webAnimator.getJScrollPane().getVerticalScrollBar();
 
+        final int iend = (int) webAnimator.stopSlider.getValue();
+        final int beg = webAnimator.startSlider.getValue();
+        final boolean custom = iend>beg/*beg == end*/;
 
-        slider.setValue(slider.getMinimum());
+        slider.setValue(custom ? webAnimator.startSlider.getValue() : slider.getMinimum());
         try {
             engine.exchange(null, 1, TimeUnit.NANOSECONDS);
         } catch (Exception ignored) {
@@ -46,16 +56,11 @@ public class RecordWebScrollerPngDir extends AbstractAction {
 
         Runnable painterThread = new Runnable() {
             public void run() {
-                try {
-                } catch (Exception e1) {
-                }
                 BufferedImage image = null;
-                double end = 0.9 * slider.getMaximum();
+                final double end = custom ? iend : slider.getMaximum();
                 while (slider.getValue() < end) {
-
-
                     if (image == null) {
-                        image = (BufferedImage) webAnimator.getPanel().createImage(webAnimator.getPanel().getWidth(), webAnimator.getPanel().getHeight());
+                        image = new BufferedImage (webAnimator.getPanel().getWidth(), webAnimator.getPanel().getHeight(),BufferedImage.TYPE_INT_ARGB);
                     }
 
                     webAnimator.getPanel().paint(image.getGraphics());
@@ -72,41 +77,44 @@ public class RecordWebScrollerPngDir extends AbstractAction {
 
                 try {
                     engine.exchange(null);
-                } catch (InterruptedException e1) {
-                    return;
+                } catch (InterruptedException ignored) {
                 }
 
             }
         };
 
+        SceneLayoutApp.threadPool.submit(painterThread);
+
         final JFileChooser chooser = new JFileChooser("/tmp/");
 
         if (JFileChooser.APPROVE_OPTION == chooser.showSaveDialog(SceneLayoutApp.desktopPane)) {
 
+
             File selectedFile = chooser.getSelectedFile();
-            AnimatedGifEncoder gifEncoder = new AnimatedGifEncoder();
 
-            gifEncoder.setFrameRate(10);
-            gifEncoder.setQuality(10);
-            gifEncoder.setDelay(100);
-            gifEncoder.start(selectedFile.getAbsolutePath());
-            Future<Object> future = (Future<Object>) SceneLayoutApp.threadPool.submit(painterThread);
+            if(!selectedFile.exists()){
+                final boolean b = selectedFile.mkdirs();
+           }
+            int c = 100000;
+            BufferedImage bi = null;
+                    ImageIO.scanForPlugins();
+            final String[] formatNames = ImageIO.getWriterFormatNames();
 
 
-            BufferedImage image = null;
+            System.err.println(Arrays.toString(formatNames));
             try {
-                boolean b;
-                do {
-                    image = engine.exchange(image);
-                    b = gifEncoder.addFrame(image);
+                while(null!=(bi=engine.exchange(bi,5, TimeUnit.SECONDS)))
+                {
+                    ImageIO.write(bi , "png",new File(selectedFile.getPath()+'/'+"hideftvads"+ (c++) +".png"));
                 }
-                while (image != null && b);
-                future.get();
-            } catch (Exception e1) {
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();  //TODO: verify for a purpose
+            } catch (TimeoutException e1) {
+                e1.printStackTrace();  //TODO: verify for a purpose
+            } catch (IOException e1) {
+                e1.printStackTrace();  //TODO: verify for a purpose
             }
-            System.out.println("finish =" + gifEncoder.finish());
-            webAnimator.pack();
-
         }
     }
 }
+

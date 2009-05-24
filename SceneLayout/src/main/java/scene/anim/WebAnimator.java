@@ -1,5 +1,6 @@
 package scene.anim;
 
+import scene.action.RecordWebScrollerPngDir;
 import scene.action.RecordWebScrollerGifAnim;
 import scene.dnd.WebViewDropTargetListener;
 
@@ -92,10 +93,8 @@ public class WebAnimator extends JInternalFrame {
         setContentPane(content);
         final JInternalFrame f = this;
 
-        bar.add(new RecordWebScrollerGifAnim(this) {{
-            setToolTipText("Record a scrolling view of the contents in the window you have sized and shaped"
-            );
-        }});
+        bar.add(new RecordWebScrollerGifAnim(this)  );
+        bar.add(new RecordWebScrollerPngDir(this)  );
         // f.setPreferredSize(getPreferredSize());
         f.setMaximizable(true);
         f.setClosable(true);
