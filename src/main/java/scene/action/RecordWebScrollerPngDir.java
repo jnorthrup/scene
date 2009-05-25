@@ -5,15 +5,13 @@ import scene.anim.WebAnimator;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
-import java.util.concurrent.Exchanger;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 /**
  * Copyright hideftvads.com 2009 all rights reserved.
@@ -36,7 +34,7 @@ public class RecordWebScrollerPngDir extends AbstractAction {
 
         final Exchanger<BufferedImage> engine = new Exchanger<BufferedImage>();
 
-        final Adjustable slider = webAnimator.getJScrollPane().getVerticalScrollBar();
+        final JScrollBar slider = webAnimator.getJScrollPane().getVerticalScrollBar();
 
         final int iend = (int) webAnimator.stopSlider.getValue();
         final int beg = webAnimator.startSlider.getValue();
@@ -52,7 +50,7 @@ public class RecordWebScrollerPngDir extends AbstractAction {
         Runnable painterThread = new Runnable() {
             public void run() {
                 BufferedImage image = null;
-                final double end = custom ? iend : slider.getMaximum();
+                final double end = custom ? iend : slider.getMaximum() - slider.getModel().getExtent();
                 while (slider.getValue() < end) {
                     if (image == null) {
                         image = new BufferedImage(webAnimator.getPanel().getWidth(), webAnimator.getPanel().getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -80,7 +78,7 @@ public class RecordWebScrollerPngDir extends AbstractAction {
         if (JFileChooser.APPROVE_OPTION == chooser.showSaveDialog(SceneLayoutApp.desktopPane)) {
 
 
-            File selectedFile = chooser.getSelectedFile();
+            final File selectedFile = chooser.getSelectedFile();
 
             if (!selectedFile.exists()) {
                 final boolean b = selectedFile.mkdirs();
@@ -102,6 +100,58 @@ public class RecordWebScrollerPngDir extends AbstractAction {
                 System.err.println("timeout as planned..");
             } catch (IOException e1) {
             }
+
+            Callable<Integer> callable = new Callable<Integer>() {
+                public Integer call() throws Exception {
+                    final String[] cmdarray = {
+                            "ffmpeg",
+                            "-r" ,
+                                    "25",
+                            "-i",
+                            selectedFile.getAbsolutePath() + "/hideftvads1%05d.png",
+                            "-threads" ,
+                                    "0",
+                            "-vcodec" ,
+                                    "libx264",
+                            "-vpre" ,
+                                    "hq",
+                            "-mbd" ,
+                                    "rd",
+                            "-level" ,
+                                    "51",
+                            "-cropbottom" ,
+                                    "2",
+                            "-y",
+                            selectedFile.getAbsolutePath() + ".mp4"
+                    };
+
+                    System.err.println("" +
+                            Arrays.toString(cmdarray)
+                    );
+                    final ProcessBuilder builder = new ProcessBuilder();
+                    builder.command(cmdarray).inheritIO();
+                    final Process process = builder.start();
+
+
+                    final int i = process.waitFor();
+                    return i ;
+                }
+            };
+            final Future<Integer> integerFuture = SceneLayoutApp.threadPool.submit(callable);
+                Callable<Boolean> callable2 = new Callable<Boolean>() {
+                    public Boolean call() throws Exception {
+                        if (integerFuture.get() == 0) {
+                            final File[] files = selectedFile.listFiles();
+                            for (File file : files) {
+                                file.delete();
+                            }
+                            return selectedFile.delete();
+                        }
+
+                        return false;
+                    }
+                };
+SceneLayoutApp.threadPool.submit(callable2) ;
         }
     }
 }
