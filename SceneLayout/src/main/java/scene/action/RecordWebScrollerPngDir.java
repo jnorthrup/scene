@@ -2,23 +2,18 @@ package scene.action;
 
 import scene.SceneLayoutApp;
 import scene.anim.WebAnimator;
-import scene.gif.AnimatedGifEncoder;
 
-import javax.swing.*;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOError;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.Exchanger;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.Arrays;
-import java.util.Iterator;
 
 /**
  * Copyright hideftvads.com 2009 all rights reserved.
@@ -45,13 +40,13 @@ public class RecordWebScrollerPngDir extends AbstractAction {
 
         final int iend = (int) webAnimator.stopSlider.getValue();
         final int beg = webAnimator.startSlider.getValue();
-        final boolean custom = iend>beg/*beg == end*/;
+        final boolean custom = iend > beg/*beg == end*/;
 
         slider.setValue(custom ? webAnimator.startSlider.getValue() : slider.getMinimum());
-        try {
-            engine.exchange(null, 1, TimeUnit.NANOSECONDS);
-        } catch (Exception ignored) {
-        }
+//        try {
+//            engine.exchange(null, 1, TimeUnit.NANOSECONDS);
+//        } catch (Exception ignored) {
+//        }
 
 
         Runnable painterThread = new Runnable() {
@@ -60,7 +55,7 @@ public class RecordWebScrollerPngDir extends AbstractAction {
                 final double end = custom ? iend : slider.getMaximum();
                 while (slider.getValue() < end) {
                     if (image == null) {
-                        image = new BufferedImage (webAnimator.getPanel().getWidth(), webAnimator.getPanel().getHeight(),BufferedImage.TYPE_INT_ARGB);
+                        image = new BufferedImage(webAnimator.getPanel().getWidth(), webAnimator.getPanel().getHeight(), BufferedImage.TYPE_INT_ARGB);
                     }
 
                     webAnimator.getPanel().paint(image.getGraphics());
@@ -74,12 +69,7 @@ public class RecordWebScrollerPngDir extends AbstractAction {
 
                     slider.setValue(value + 1);
                 }
-
-                try {
-                    engine.exchange(null);
-                } catch (InterruptedException ignored) {
-                }
-
+                Thread.currentThread().interrupt();
             }
         };
 
@@ -92,27 +82,25 @@ public class RecordWebScrollerPngDir extends AbstractAction {
 
             File selectedFile = chooser.getSelectedFile();
 
-            if(!selectedFile.exists()){
+            if (!selectedFile.exists()) {
                 final boolean b = selectedFile.mkdirs();
-           }
+            }
             int c = 100000;
             BufferedImage bi = null;
-                    ImageIO.scanForPlugins();
+            ImageIO.scanForPlugins();
             final String[] formatNames = ImageIO.getWriterFormatNames();
 
 
             System.err.println(Arrays.toString(formatNames));
             try {
-                while(null!=(bi=engine.exchange(bi,5, TimeUnit.SECONDS)))
-                {
-                    ImageIO.write(bi , "png",new File(selectedFile.getPath()+'/'+"hideftvads"+ (c++) +".png"));
+                while (null != (bi = engine.exchange(bi, 5, TimeUnit.SECONDS))) {
+                    ImageIO.write(bi, "png", new File(selectedFile.getPath() + '/' + "hideftvads" + (c++) + ".png"));
                 }
             } catch (InterruptedException e1) {
-                e1.printStackTrace();  //TODO: verify for a purpose
+                e1.printStackTrace();
             } catch (TimeoutException e1) {
-                e1.printStackTrace();  //TODO: verify for a purpose
+                System.err.println("timeout as planned..");
             } catch (IOException e1) {
-                e1.printStackTrace();  //TODO: verify for a purpose
             }
         }
     }
