@@ -120,7 +120,7 @@ public class WebAnimator extends JInternalFrame {
         f.setDropTarget(new DropTarget(f, DnDConstants.ACTION_LINK, new WebViewDropTargetListener((WebAnimator) f), true));
 
         htmlPanel.addSelectionChangeListener(new SelectionChangeListener() {
-            public void selectionChanged(SelectionChangeEvent event) {
+            public void selectionChanged(final SelectionChangeEvent event) {
                 System.err.println("selectionChanged(): selection node: " + htmlPanel.getSelectionNode());
             }
         });

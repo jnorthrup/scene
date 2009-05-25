@@ -1,15 +1,14 @@
 package scene.action;
 
-import scene.SceneLayoutApp;
-import scene.anim.WebAnimator;
+import scene.*;
+import scene.anim.*;
 
-import javax.imageio.ImageIO;
+import javax.imageio.*;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
+import java.awt.event.*;
+import java.awt.image.*;
+import java.io.*;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -128,7 +127,8 @@ public class RecordWebScrollerPngDir extends AbstractAction {
                             Arrays.toString(cmdarray)
                     );
                     final ProcessBuilder builder = new ProcessBuilder();
-                    builder.command(cmdarray).inheritIO();
+                    builder.command(cmdarray) ;
+                    builder.redirectErrorStream(true);
                     final Process process = builder.start();
 
 
