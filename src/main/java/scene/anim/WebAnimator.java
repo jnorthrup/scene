@@ -1,7 +1,14 @@
 package scene.anim;
 
-import scene.action.RecordWebScrollerPngDir;
+import org.lobobrowser.html.HtmlRendererContext;
+import org.lobobrowser.html.UserAgentContext;
+import org.lobobrowser.html.gui.HtmlPanel;
+import org.lobobrowser.html.gui.SelectionChangeEvent;
+import org.lobobrowser.html.gui.SelectionChangeListener;
+import org.lobobrowser.html.test.SimpleHtmlRendererContext;
+import org.lobobrowser.html.test.SimpleUserAgentContext;
 import scene.action.RecordWebScrollerGifAnim;
+import scene.action.RecordWebScrollerPngDir;
 import scene.dnd.WebViewDropTargetListener;
 
 import javax.swing.*;
@@ -19,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
  * Copyright hideftvads.com 2009 all rights reserved.
@@ -33,8 +41,6 @@ public class WebAnimator extends JInternalFrame {
     private JLabel qrCode = new JLabel();
     private JPanel panel = new JPanel(new BorderLayout());
     private JPanel content = new JPanel(new BorderLayout());
-    private JEditorPane jEditorPane = new JEditorPane();
-    private JScrollPane jScrollPane = new JScrollPane(jEditorPane);
     private DataFlavor[] dataFlavors = new DataFlavor[]{
             DataFlavor.javaFileListFlavor,
             new DataFlavor("application/x-java-url;class=java.net.URL", "URL"),
@@ -43,6 +49,11 @@ public class WebAnimator extends JInternalFrame {
     };
     public JSlider startSlider = new JSlider();
     public JSlider stopSlider = new JSlider();
+    final private HtmlPanel htmlPanel = new HtmlPanel();
+    private static final Charset UTF8 = Charset.forName("UTF8");
+    final private SimpleUserAgentContext ucontext = new SimpleUserAgentContext();
+    final private HtmlRendererContext rcontext = new SimpleHtmlRendererContext(htmlPanel, ucontext);
+    private JScrollPane jScrollPane = new JScrollPane( htmlPanel);
 
     public WebAnimator(Object... a) {
         super("Create Web Animation");
@@ -51,7 +62,7 @@ public class WebAnimator extends JInternalFrame {
 
     private void init() {
 
-        jEditorPane.setEditable(false);
+
         panel.add(getQrCode(), BorderLayout.WEST);
         jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         panel.add(jScrollPane, BorderLayout.CENTER);
@@ -61,16 +72,16 @@ public class WebAnimator extends JInternalFrame {
 
         final TitledBorder border1 = BorderFactory.createTitledBorder("Beg");
         startSlider.setBorder(border1);
-                startSlider.setOrientation(SwingConstants.VERTICAL);
-                startSlider.setInverted(true);
+        startSlider.setOrientation(SwingConstants.VERTICAL);
+        startSlider.setInverted(true);
 
         final TitledBorder border2 = BorderFactory.createTitledBorder("End");
         stopSlider.setBorder(border2);
-                stopSlider.setOrientation(SwingConstants.VERTICAL);
-                stopSlider.setInverted(true);
-        
+        stopSlider.setOrientation(SwingConstants.VERTICAL);
+        stopSlider.setInverted(true);
+
         final JSplitPane jSplitPane = new JSplitPane(SwingConstants.VERTICAL, startSlider, stopSlider);
-        content.add( jSplitPane, BorderLayout.WEST);
+        content.add(jSplitPane, BorderLayout.WEST);
 //        
 
         final JScrollBar verticalScrollBar = jScrollPane.getVerticalScrollBar();
@@ -79,11 +90,11 @@ public class WebAnimator extends JInternalFrame {
         verticalScrollBar.addAdjustmentListener(new AdjustmentListener() {
             @Override
             public void adjustmentValueChanged(AdjustmentEvent e) {
-                startSlider.setMaximum(verticalScrollBar.getMaximum()-verticalScrollBar.getModel().getExtent());
+                startSlider.setMaximum(verticalScrollBar.getMaximum() - verticalScrollBar.getModel().getExtent());
 //                     startSlider.setExtent(verticalScrollBar.getModel().getExtent());
-                stopSlider.setMaximum(verticalScrollBar.getMaximum()-verticalScrollBar.getModel().getExtent());
+                stopSlider.setMaximum(verticalScrollBar.getMaximum() - verticalScrollBar.getModel().getExtent());
 //                     stopSlider.setExtent(verticalScrollBar.getModel().getExtent());
-                       }
+            }
         });
 
         startSlider.addChangeListener(new MyChangeListener(verticalScrollBar));
@@ -93,8 +104,8 @@ public class WebAnimator extends JInternalFrame {
         setContentPane(content);
         final JInternalFrame f = this;
 
-        bar.add(new RecordWebScrollerGifAnim(this)  );
-        bar.add(new RecordWebScrollerPngDir(this)  );
+        bar.add(new RecordWebScrollerGifAnim(this));
+        bar.add(new RecordWebScrollerPngDir(this));
         // f.setPreferredSize(getPreferredSize());
         f.setMaximizable(true);
         f.setClosable(true);
@@ -107,7 +118,14 @@ public class WebAnimator extends JInternalFrame {
         f.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         f.setDropTarget(new DropTarget(f, DnDConstants.ACTION_LINK, new WebViewDropTargetListener((WebAnimator) f), true));
-        new DropTarget(qrCode, DnDConstants.ACTION_COPY_OR_MOVE,
+
+        htmlPanel.addSelectionChangeListener(new SelectionChangeListener() {
+            public void selectionChanged(SelectionChangeEvent event) {
+                System.err.println("selectionChanged(): selection node: " + htmlPanel.getSelectionNode());
+            }
+        });
+
+        final DropTarget dropTarget1 = new DropTarget(qrCode, DnDConstants.ACTION_COPY_OR_MOVE,
                 new DropTargetListener() {
                     /**
                      * @param dtde the <code>DropTargetDragEvent</code>
@@ -179,6 +197,8 @@ public class WebAnimator extends JInternalFrame {
                         }
                     }
                 }, true);
+
+
     }
 
 
@@ -198,13 +218,10 @@ public class WebAnimator extends JInternalFrame {
         this.urlText = urlText;
     }
 
-    public JEditorPane getJEditorPane() {
-        return jEditorPane;
+    public HtmlPanel getJEditorPane() {
+        return this.htmlPanel;
     }
 
-    public void setJEditorPane(JEditorPane jEditorPane) {
-        this.jEditorPane = jEditorPane;
-    }
 
     public JScrollPane getJScrollPane() {
         return jScrollPane;
@@ -226,39 +243,42 @@ public class WebAnimator extends JInternalFrame {
         return panel;
     }
 
+
     public void setPanel(JPanel panel) {
         this.panel = panel;
     }
 
+
     public void updateEditor(URL url) {
-        if (url == null) {
-            return;
-        }
-        try {
-            getJEditorPane().setPage(url.toExternalForm());
-        } catch (IOException e) {
-            System.err.println("Attempted to read a bad URL: " + url.toExternalForm());
-        }
-        getUrlText().setText(url.toExternalForm());
-        try {
-            final ImageIcon icon;
-            Dimension viewSize = getContentPane().getSize();
-            getContentPane().setPreferredSize(viewSize);
+        if (url != null) {
 
-            int v = (int) viewSize.getHeight();
-            URL url1 = new URL("http://chart.apis.google.com/chart?cht=qr&chs=" + v + "&chl=" + url.toString());
-            icon = new ImageIcon(url1);
+            this.rcontext.navigate(url, null);
 
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    getQrCode().setIcon(icon);
-                    getQrCode().invalidate();
-                    getQrCode().repaint();
-                }
-            });
-        } catch (MalformedURLException ignored) {
+            getUrlText().setText(url.toExternalForm());
+            try {
+                final ImageIcon icon;
+                Dimension viewSize = getContentPane().getSize();
+                getContentPane().setPreferredSize(viewSize);
+
+                int v = (int) viewSize.getHeight();
+                URL url1 = new URL("http://chart.apis.google.com/chart?cht=qr&chs=" + v + "&chl=" + url.toString());
+                icon = new ImageIcon(url1);
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        getQrCode().setIcon(icon);
+                        getQrCode().invalidate();
+                        getQrCode().repaint();
+                    }
+                });
+            } catch (MalformedURLException ignored) {
+            }
         }
+    }
+
+    public HtmlPanel getHtmlPanel() {
+        return htmlPanel;
     }
 
     private static class MyChangeListener implements ChangeListener {
@@ -269,7 +289,7 @@ public class WebAnimator extends JInternalFrame {
         }
 
         @Override
-            public void stateChanged(ChangeEvent e) {
+        public void stateChanged(ChangeEvent e) {
             final int value = ((JSlider) e.getSource()).getValue();
             verticalScrollBar.setValue(value);
 

@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.concurrent.*;
 
@@ -24,7 +23,7 @@ public class RecordWebScrollerPngDir extends AbstractAction {
     private WebAnimator webAnimator;
 
     public RecordWebScrollerPngDir(WebAnimator webAnimator) {
-        super(">.png");
+        super(">.mp4");
         this.webAnimator = webAnimator;
     }
 
@@ -105,22 +104,22 @@ public class RecordWebScrollerPngDir extends AbstractAction {
                 public Integer call() throws Exception {
                     final String[] cmdarray = {
                             "ffmpeg",
-                            "-r" ,
-                                    "25",
+                            "-r",
+                            "25",
                             "-i",
                             selectedFile.getAbsolutePath() + "/hideftvads1%05d.png",
-                            "-threads" ,
-                                    "0",
-                            "-vcodec" ,
-                                    "libx264",
-                            "-vpre" ,
-                                    "hq",
-                            "-mbd" ,
-                                    "rd",
-                            "-level" ,
-                                    "51",
-                            "-cropbottom" ,
-                                    "2",
+                            "-threads",
+                            "0",
+                            "-vcodec",
+                            "libx264",
+                            "-vpre",
+                            "hq",
+                            "-mbd",
+                            "rd",
+                            "-level",
+                            "51",
+                            "-cropbottom",
+                            "2",
                             "-y",
                             selectedFile.getAbsolutePath() + ".mp4"
                     };
@@ -134,24 +133,24 @@ public class RecordWebScrollerPngDir extends AbstractAction {
 
 
                     final int i = process.waitFor();
-                    return i ;
+                    return i;
                 }
             };
             final Future<Integer> integerFuture = SceneLayoutApp.threadPool.submit(callable);
-                Callable<Boolean> callable2 = new Callable<Boolean>() {
-                    public Boolean call() throws Exception {
-                        if (integerFuture.get() == 0) {
-                            final File[] files = selectedFile.listFiles();
-                            for (File file : files) {
-                                file.delete();
-                            }
-                            return selectedFile.delete();
+            Callable<Boolean> callable2 = new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    if (integerFuture.get() == 0) {
+                        final File[] files = selectedFile.listFiles();
+                        for (File file : files) {
+                            file.delete();
                         }
-
-                        return false;
+                        return selectedFile.delete();
                     }
-                };
-SceneLayoutApp.threadPool.submit(callable2) ;
+
+                    return false;
+                }
+            };
+            SceneLayoutApp.threadPool.submit(callable2);
         }
     }
 }

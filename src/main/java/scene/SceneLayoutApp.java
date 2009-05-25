@@ -20,6 +20,8 @@ import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.lobobrowser.html.BrowserFrame;
+
 /**
  * Hello world!
  */
@@ -247,6 +249,9 @@ public class SceneLayoutApp {
     }
 
     static public void main(String[] args) {
+
+//        final BrowserFrame browserFrame = new BrowserFrame();
+
         new SceneLayoutApp();
 
     }

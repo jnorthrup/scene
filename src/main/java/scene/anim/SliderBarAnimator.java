@@ -18,11 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
+ * Copyright hideftvads.com 2009 all rights reserved.
+ *
  * User: jim
  * Date: May 15, 2009
  * Time: 1:31:56 AM
- * To change this template use File | Settings | File Templates.
  */
 public class SliderBarAnimator {
     final static Map<Class, Class> x = new HashMap();

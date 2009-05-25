@@ -5,6 +5,7 @@ import scene.dnd.WebViewDropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.net.MalformedURLException;
 
 /**
  * Copyright hideftvads.com 2009 all rights reserved.
@@ -24,7 +25,8 @@ public class WebAnimUrlTextAction implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try {
             this.webViewDropTargetListener.frame.updateEditor(new URL(webViewDropTargetListener.getFrame().getUrlText().getText()));
-        } catch (Exception ignored) {
+        } catch (MalformedURLException e1) {
+            e1.printStackTrace();  //TODO: verify for a purpose
         }
     }
 }

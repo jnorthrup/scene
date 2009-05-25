@@ -13,11 +13,11 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
+ * Copyright hideftvads.com 2009 all rights reserved.
+ *
  * User: jim
  * Date: May 15, 2009
  * Time: 1:31:56 AM
- * To change this template use File | Settings | File Templates.
  */
 public class ProgressBarAnimator {
     private JInternalFrame inf;
