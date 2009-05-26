@@ -1,26 +1,19 @@
 package scene;
 
-import com.thoughtworks.xstream.XStream;
-import scene.action.CreateSceneWindowAction;
-import scene.action.CreateWebViewAction;
-import scene.alg.Pair;
-import scene.anim.ProgressBarAnimator;
-import scene.anim.SliderBarAnimator;
+import com.thoughtworks.xstream.*;
+import scene.action.*;
+import scene.alg.*;
+import scene.anim.*;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
+import javax.swing.border.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
+import java.awt.event.*;
+import java.net.*;
+import java.util.*;
 import java.util.List;
 import java.util.Timer;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import org.lobobrowser.html.BrowserFrame;
+import java.util.concurrent.*;
 
 /**
  * Hello world!
@@ -221,31 +214,51 @@ public class SceneLayoutApp {
     static {
         XSTREAM = new XStream();
 //        XSTREAM.aliasType( "triple", Triple.class);
+        final JEditorPane ed = new JEditorPane();
+
+//        final SimpleUserAgentContext userAgentContext = new SimpleUserAgentContext();
+//        final SimpleHtmlRendererContext rendererContext = new SimpleHtmlRendererContext(ed, userAgentContext);
+
         desktopPane = new JDesktopPane() {
-            final JEditorPane ed = new JEditorPane();
 
-            {   setOpaque(false);
-                try {
-                          ed.setOpaque(false);
-                    ed.setBackground(Color.black);
-                    ed.setPage("http://www.hideftvads.com");
-                    ed.setEditable(false);
-                    ed.setEnabled(false);
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+            Callable<Image> callable = new Callable<Image>() {
+                public Image call() throws Exception {
+                    setOpaque(false);
+                    ed.setSize(getSize());
+                    ed.setOpaque(true);
+//                    ed.setBackground(Color.black);
+                    final String s = Arrays.toString(System.getenv().values().toArray());
+                    final String s1 = URLEncoder.encode(s);
+//                    rendererContext.navigate("http://www.hideftvads.com");
+ed.setPage("http://www.hideftvads.com");
+//                        ed.setEnabled(false);
+
+                    ed.invalidate();
+                    ed.repaint();
+                    return null;
                 }
+            };
+            Future<Image> future =
 
-            }
+                    (Future<Image>) SceneLayoutApp.threadPool.submit(callable);
 
             @Override
             public void paint(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g;
+                
+                try {
+                    final Image o = future.get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //TODO: Verify for a purpose
+                } catch (ExecutionException e) {
+                    e.printStackTrace();  //TODO: Verify for a purpose
+                }
                 ed.setSize(getSize());
-                ed.paint(g);
-                super.paint(g);
+                ed.paint(g);  super.paint(g);
             }
 
         };
+        desktopPane.invalidate();
     }
 
     static public void main(String[] args) {
