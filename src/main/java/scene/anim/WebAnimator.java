@@ -1,32 +1,23 @@
 package scene.anim;
 
-import org.lobobrowser.html.HtmlRendererContext;
-import org.lobobrowser.html.UserAgentContext;
-import org.lobobrowser.html.gui.HtmlPanel;
-import org.lobobrowser.html.gui.SelectionChangeEvent;
-import org.lobobrowser.html.gui.SelectionChangeListener;
-import org.lobobrowser.html.test.SimpleHtmlRendererContext;
-import org.lobobrowser.html.test.SimpleUserAgentContext;
-import scene.action.RecordWebScrollerGifAnim;
-import scene.action.RecordWebScrollerPngDir;
-import scene.dnd.WebViewDropTargetListener;
+import org.lobobrowser.html.*;
+import org.lobobrowser.html.gui.*;
+import org.lobobrowser.html.style.*;
+import org.lobobrowser.html.test.*;
+import org.w3c.dom.*;
+import scene.action.*;
+import scene.dnd.*;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.border.*;
+import javax.swing.event.*;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.datatransfer.*;
 import java.awt.dnd.*;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
+import java.awt.event.*;
+import java.io.*;
+import java.net.*;
+import java.nio.charset.*;
 
 /**
  * Copyright hideftvads.com 2009 all rights reserved.
@@ -53,7 +44,7 @@ public class WebAnimator extends JInternalFrame {
     private static final Charset UTF8 = Charset.forName("UTF8");
     final private SimpleUserAgentContext ucontext = new SimpleUserAgentContext();
     final private HtmlRendererContext rcontext = new SimpleHtmlRendererContext(htmlPanel, ucontext);
-    private JScrollPane jScrollPane = new JScrollPane( htmlPanel);
+    private JScrollPane jScrollPane = new JScrollPane(htmlPanel);
 
     public WebAnimator(Object... a) {
         super("Create Web Animation");
@@ -63,6 +54,8 @@ public class WebAnimator extends JInternalFrame {
     private void init() {
 
 
+        htmlPanel.setDefaultOverflowY(RenderState.OVERFLOW_AUTO);
+        htmlPanel.setDefaultMarginInsets(new Insets(0, 0, 0, 0));
         panel.add(getQrCode(), BorderLayout.WEST);
         jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         panel.add(jScrollPane, BorderLayout.CENTER);
@@ -81,8 +74,10 @@ public class WebAnimator extends JInternalFrame {
         stopSlider.setInverted(true);
 
         final JSplitPane jSplitPane = new JSplitPane(SwingConstants.VERTICAL, startSlider, stopSlider);
-        content.add(jSplitPane, BorderLayout.WEST);
+        final JToolBar west = new JToolBar();
+        content.add(west, BorderLayout.WEST);
 //        
+        west.add(jSplitPane);
 
         final JScrollBar verticalScrollBar = jScrollPane.getVerticalScrollBar();
         final AdjustmentListener[] listeners = verticalScrollBar.getAdjustmentListeners();
@@ -113,7 +108,6 @@ public class WebAnimator extends JInternalFrame {
         f.setResizable(true);
         f.setToolTipText("This window creates a small barcoded banner from an html web link");
         urlText.setToolTipText("Enter a URL here and hit enter to update the layouts");
-        bar.setToolTipText("Press Record to create a scrolling banner in the sizes of the layouts in this view.  Record will save an animated gif file.");
 
         f.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -121,7 +115,10 @@ public class WebAnimator extends JInternalFrame {
 
         htmlPanel.addSelectionChangeListener(new SelectionChangeListener() {
             public void selectionChanged(final SelectionChangeEvent event) {
-                System.err.println("selectionChanged(): selection node: " + htmlPanel.getSelectionNode());
+                final Node selectionNode = htmlPanel.getSelectionNode();
+                System.err.println("selectionChanged(): selection node: " + selectionNode);
+
+
             }
         });
 
