@@ -3,11 +3,15 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-         <groupId>hideftvads</groupId>
-        <version>0.0.11</version>
+    <groupId>hideftvads</groupId>
+    <version>0.0.11</version>
     <artifactId>SceneLayout</artifactId>
     <name>SceneLayout</name>
     <url>http://demos.hideftvads.com:8080/</url>
+    <organization>
+        <name>HidefTVAds!</name>
+        <url>http://www.HidefTVAds.com</url>
+    </organization>
     <build>
         <plugins>
             <plugin>
@@ -62,18 +66,21 @@
                     <!-- [optional] transitive dependencies filter - if omitted, all transitive dependencies are included -->
 
                     <!--resourcesDirectory>${project.basedir}/src/main/jnlp/resources</resourcesDirectory--> <!-- default value -->
-
+                    
                     <!-- JNLP generation -->
                     <jnlp>
                         <!-- default values -->
-                        <!--inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath-->
-                        <!--inputTemplate>src/main/jnlp/template.vm</inputTemplate--> <!-- relative to inputTemplateResourcePath -->
+                        <inputTemplateResourcePath>${project.basedir}/src/main/jnlp</inputTemplateResourcePath>
+                        <inputTemplate>template.vm</inputTemplate>
+                <!--relative to inputTemplateResourcePath -->
                         <!--outputFile>app.jnlp</outputFile-->
                         <!-- defaults to launch.jnlp -->
 
                         <!-- used to automatically identify the jar containing the main class. -->
                         <!-- this is perhaps going to change -->
                         <mainClass>scene.SceneLayoutApp</mainClass>
+                         
+                    
                     </jnlp>
 
 
@@ -109,7 +116,13 @@
                             <!-- optional shortcut to generate the store. -->
                         </keystoreConfig>
                     </sign>
-
+                    
+                    
+                    
+                    
+                                         <unsignAlreadySignedJars>
+                                                true
+                                            </unsignAlreadySignedJars>
                     <!-- BUILDING PROCESS -->
 
                     <pack200>true</pack200>
@@ -172,7 +185,7 @@
             <artifactId>commons-cli</artifactId>
             <version>1.0</version>
         </dependency>
-       
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

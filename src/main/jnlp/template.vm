@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp
+    spec="1.0+"
+    codebase="http://demos.hideftvads.com:8080/"
+    href="launch.jnlp">
+  <information>
+    <title>$project.Name</title>
+    <vendor>$project.Organization.Name</vendor>
+    <homepage href="http://demos.hideftvads.com:8080/"/>
+    <description>$project.Description</description>
+    <!--offline-allowed/-->
+  </information>
+  <security>
+     <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.6+"/>
+     
+${dependencies}
+
+  </resources>
+  <application-desc main-class="scene.SceneLayoutApp"/>
+</jnlp>
+
