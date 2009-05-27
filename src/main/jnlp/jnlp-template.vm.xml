@@ -1,0 +1,51 @@
+<!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc//DTD JNLP Descriptor 6.0.10//EN"
+        "http://java.sun.com/dtd/JNLP-6.0.dtd">
+<jnlp   spec="6.0.10"
+      codebase="$project.Url"
+      href="$outputFile"
+
+        >
+    <information>
+        <title>$project.Name</title>
+        <vendor>$project.Organization.Name</vendor>
+        <homepage href="$project.Organization.Url"/>
+        <description>$project.Description</description>
+        <description kind="one-line">HidefTVAds! Scene Layout Tool</description>
+        <description kind="short">this application helps arrange video overlay geometies for inventory import.
+            this is intended for multimedia advertising for the sole purpose of HidefTVAds! and its strategic
+            partnerships.
+
+            Warranty only valid for represented accounts.
+        </description>
+        <!--<description kind="tooltip">HideftvAds! Scene Layout Tool</description>-->
+        <!--<icon-->
+        <!--width="640"-->
+        <!--height="360"-->
+        <!--kind="splash"-->
+        <!--href="http://sites.hideftvads.com/i1/Home/Looking_to_the_sky_above_by_Sitar_sama-1.jpg"/>-->
+        <offline-allowed/>
+        <!--<shortcut online="true"/>-->
+    </information>
+
+    <update policy="prompt-update" check="always"/>
+    <security>
+        <all-permissions/>
+    </security>
+
+
+    <resources>
+        <!--<j2se version="$j2seVersion"/>-->
+
+        <j2se version="1.6+"
+              max-heap-size="1g"
+              java-vm-args="-XX:+AggressiveOpts -server"
+                />
+        <!--$dependencies-->
+
+    </resources>
+
+
+    <application-desc main-class="$mainClass"/>
+</jnlp>
+        
+

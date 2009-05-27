@@ -71,58 +71,56 @@
                     <jnlp>
                         <!-- default values -->
                         <inputTemplateResourcePath>${project.basedir}/src/main/jnlp</inputTemplateResourcePath>
-                        <inputTemplate>template.vm</inputTemplate>
+                        <inputTemplate>jnlp-template.vm.xml</inputTemplate>
                 <!--relative to inputTemplateResourcePath -->
                         <!--outputFile>app.jnlp</outputFile-->
                         <!-- defaults to launch.jnlp -->
 
                         <!-- used to automatically identify the jar containing the main class. -->
                         <!-- this is perhaps going to change -->
-                        <mainClass>scene.SceneLayoutApp</mainClass>
-                         
-                    
+                        <mainClass>scene.SceneLayoutApp</mainClass> 
                     </jnlp>
 
 
                     <!-- SIGNING -->
                     <!-- defining this will automatically sign the jar and its dependencies, if necessary -->
-                    <sign>
-                        <keystore>Copyright2009HidefTVAdsDotCom</keystore>
-                        <keypass>Copyright2009HidefTVAdsDotCom</keypass>
+                    <!--<sign>-->
+                        <!--<keystore>Copyright2009HidefTVAdsDotCom</keystore>-->
+                        <!--<keypass>Copyright2009HidefTVAdsDotCom</keypass>-->
                         <!-- we need to override passwords easily from the command line. ${keypass} -->
-                        <storepass>Copyright2009HidefTVAdsDotCom</storepass>
+                        <!--<storepass>Copyright2009HidefTVAdsDotCom</storepass>-->
                         <!-- ${storepass} -->
                         <!--storetype>Copyright2009HidefTVAdsDotCom</storetype-->
-                        <alias>Copyright2009HidefTVAdsDotCom</alias>
+                        <!--<alias>Copyright2009HidefTVAdsDotCom</alias>-->
 
                         <!--validity>Copyright2009HidefTVAdsDotCom</validity-->
 
                         <!-- only required for generating the keystore -->
-                        <dnameCn>Copyright2009HidefTVAdsDotCom</dnameCn>
-                        <dnameOu>Copyright2009HidefTVAdsDotCom</dnameOu>
-                        <dnameO>Copyright2009HidefTVAdsDotCom</dnameO>
-                        <dnameL>Copyright2009HidefTVAdsDotCom</dnameL>
-                        <dnameSt>Copyright2009HidefTVAdsDotCom</dnameSt>
-                        <dnameC>Copyright2009HidefTVAdsDotCom</dnameC>
+                        <!--<dnameCn>Copyright2009HidefTVAdsDotCom</dnameCn>-->
+                        <!--<dnameOu>Copyright2009HidefTVAdsDotCom</dnameOu>-->
+                        <!--<dnameO>Copyright2009HidefTVAdsDotCom</dnameO>-->
+                        <!--<dnameL>Copyright2009HidefTVAdsDotCom</dnameL>-->
+                        <!--<dnameSt>Copyright2009HidefTVAdsDotCom</dnameSt>-->
+                        <!--<dnameC>Copyright2009HidefTVAdsDotCom</dnameC>-->
 
-                        <verify>true</verify>
+                        <!--<verify>true</verify>-->
                         <!-- verify that the signing operation succeeded -->
 
                         <!-- KEYSTORE MANAGEMENT -->
-                        <keystoreConfig>
-                            <delete>true</delete>
+                        <!--<keystoreConfig>-->
+                            <!--<delete>true</delete>-->
                             <!-- delete the keystore -->
-                            <gen>true</gen>
+                            <!--<gen>true</gen>-->
                             <!-- optional shortcut to generate the store. -->
-                        </keystoreConfig>
-                    </sign>
-                    
-                    
-                    
-                    
-                                         <unsignAlreadySignedJars>
-                                                true
-                                            </unsignAlreadySignedJars>
+                        <!--</keystoreConfig>-->
+                    <!--</sign>-->
+                    <!---->
+                    <!---->
+                    <!---->
+                    <!---->
+                                         <!--<unsignAlreadySignedJars>-->
+                                                <!--true-->
+                                            <!--</unsignAlreadySignedJars>-->
                     <!-- BUILDING PROCESS -->
 
                     <pack200>true</pack200>
