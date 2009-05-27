@@ -1,24 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
-    spec="1.0+"
-    codebase="http://demos.hideftvads.com:8080/"
-    href="launch.jnlp">
+    spec="$jnlpspec"
+    codebase="$$codebase"
+    context="$$context"
+    href="$$name">
   <information>
     <title>$project.Name</title>
     <vendor>$project.Organization.Name</vendor>
-    <homepage href="http://demos.hideftvads.com:8080/"/>
+    <homepage href="$project.Url"/>
     <description>$project.Description</description>
+#if($offlineAllowed)
     <!--offline-allowed/-->
+#end
   </information>
+#if($allPermissions)
   <security>
      <all-permissions/>
   </security>
-  <resources>
-    <j2se version="1.6+"/>
-     
-${dependencies}
-
-  </resources>
-  <application-desc main-class="scene.SceneLayoutApp"/>
+#end
+  <!--resources>
+    <j2se version="$j2seVersion"/>
+     $dependencies
+  </resources-->
+  
+      <j2se version="1.6+"
+       initial-heap-size="32m"
+       max-heap-size="1g"
+       />
+       $dependencies
+    </resources>
+    <application-desc main-class="$mainClass">
+      <!--argument>1</argument>
+      <argument>2</argument-->
+    </application-desc> 
 </jnlp>
 
