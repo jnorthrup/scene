@@ -117,6 +117,7 @@ public class WebAnimator extends JInternalFrame {
             public void selectionChanged(final SelectionChangeEvent event) {
                 final Node selectionNode = htmlPanel.getSelectionNode();
                 System.err.println("selectionChanged(): selection node: " + selectionNode);
+               
 
 
             }
@@ -255,7 +256,7 @@ public class WebAnimator extends JInternalFrame {
             try {
                 final ImageIcon icon;
                 Dimension viewSize = getContentPane().getSize();
-                getContentPane().setPreferredSize(viewSize);
+//                getContentPane().setPreferredSize(viewSize);
 
                 int v = (int) viewSize.getHeight();
                 URL url1 = new URL("http://chart.apis.google.com/chart?cht=qr&chs=" + v + "&chl=" + url.toString());
