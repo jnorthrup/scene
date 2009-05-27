@@ -23,21 +23,21 @@
  */
 package org.lobobrowser.html.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.datatransfer.*;
-
-import javax.swing.*;
-
+import l.*;
 import org.lobobrowser.html.*;
 import org.lobobrowser.html.domimpl.*;
 import org.lobobrowser.html.renderer.*;
-import org.lobobrowser.html.style.RenderState;
+import org.lobobrowser.html.style.*;
 import org.lobobrowser.util.*;
-import org.lobobrowser.util.gui.ColorFactory;
+import org.lobobrowser.util.gui.*;
 import org.w3c.dom.*;
-import java.util.logging.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.event.*;
 import java.util.*;
+import java.util.logging.*;
 
 /**
  * A Swing component that renders a HTML block, given 
@@ -50,9 +50,9 @@ import java.util.*;
  * @author J. H. S.
  */
 public class HtmlBlockPanel extends JComponent implements NodeRenderer, RenderableContainer, ClipboardOwner {
-	private static final Logger logger = Logger.getLogger(HtmlBlockPanel.class.getName());
-	private static final boolean loggableInfo = logger.isLoggable(Level.INFO);
-	protected final FrameContext frameContext;	
+//	private static final Logger logger = Logger.getLogger(HtmlBlockPanel.class.getName());
+//	private static final boolean loggableInfo = false;
+    final FrameContext frameContext;	
 	protected final UserAgentContext ucontext;
 	protected final HtmlRendererContext rcontext;
 	
@@ -64,8 +64,11 @@ public class HtmlBlockPanel extends JComponent implements NodeRenderer, Renderab
     //protected Insets defaultPaddingInsets = null; 
     protected int defaultOverflowX = RenderState.OVERFLOW_AUTO;
     protected int defaultOverflowY = RenderState.OVERFLOW_SCROLL;
+    private LOG logger
+            ;
 
-	public HtmlBlockPanel(UserAgentContext pcontext, HtmlRendererContext rcontext, FrameContext frameContext) {
+
+    public HtmlBlockPanel(UserAgentContext pcontext, HtmlRendererContext rcontext, FrameContext frameContext) {
 		this(ColorFactory.TRANSPARENT, false, pcontext, rcontext, frameContext);
 	}
 	
@@ -544,17 +547,16 @@ public class HtmlBlockPanel extends JComponent implements NodeRenderer, Renderab
 		}
 		RBlock block = this.rblock;
 		if(block != null) {
-			boolean liflag = loggableInfo;
-			long time1 = liflag ? System.currentTimeMillis() : 0;
+            long time1 = false ? System.currentTimeMillis() : 0;
 			block.paint(g);
-			if(liflag) {
-				long time2 = System.currentTimeMillis();
-				Node rootNode = this.getRootNode();
-				String uri = rootNode instanceof Document ? ((Document) rootNode).getDocumentURI() : "";
-				logger.info("paintComponent(): URI=[" + uri + "]. Block paint elapsed: " + (time2 - time1) + " ms.");
-			}
+//            if (false) {
+//				long time2 = System.currentTimeMillis();
+//Node rootNode = this.getRootNode();
+//String uri = rootNode instanceof Document ? ((Document) rootNode).getDocumentURI() : "";
+//logger.info("paintComponent(): URI=[" + uri + "]. Block paint elapsed: " + (time2 - time1) + " ms.");
+//}
 
-			// Paint FrameContext selection
+            // Paint FrameContext selection
 
 			RenderableSpot start = this.startSelection;
 			RenderableSpot end = this.endSelection;
@@ -568,7 +570,7 @@ public class HtmlBlockPanel extends JComponent implements NodeRenderer, Renderab
 	public void doLayout() {
 		try {
 			Dimension size = this.getSize();
-			boolean liflag = loggableInfo;
+			boolean liflag = false;
 			long time1 = 0;
 			if(liflag) {
 				time1 = System.currentTimeMillis();
@@ -701,7 +703,7 @@ public class HtmlBlockPanel extends JComponent implements NodeRenderer, Renderab
 					NodeImpl node = dn.node;
 					if(node == null) {
 						// This is all-invalidate (new style sheet)
-						if(loggableInfo) {
+						if(false) {
 							logger.info("processDocumentNotifications(): Calling invalidateLayoutDeep().");
 						}
 						this.rblock.invalidateLayoutDeep();
@@ -717,7 +719,7 @@ public class HtmlBlockPanel extends JComponent implements NodeRenderer, Renderab
 //							}
 						}
 						else {
-							if(loggableInfo) {
+							if(false) {
 								logger.info("processDocumentNotifications(): Unable to find UINode for " + node);
 							}
 						}

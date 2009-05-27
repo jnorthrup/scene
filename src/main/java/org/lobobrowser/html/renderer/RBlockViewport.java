@@ -32,6 +32,8 @@ import org.lobobrowser.html.domimpl.*;
 import org.w3c.dom.*;
 import java.util.logging.*;
 
+import l.*;
+
 /**
  * A substantial portion of the HTML rendering logic of the package can
  * be found in this class.
@@ -66,8 +68,11 @@ public class RBlockViewport extends BaseRCollection {
     // of the RBlockViewport, so ancestor blocks can obtain them to adjust
     // their own bounds.
 	
+   
 	public static final Insets ZERO_INSETS = new Insets(0, 0, 0, 0);
-	private static final Logger logger = Logger.getLogger(RBlockViewport.class.getName());
+
+    ;
+//	private static final LOG logger = LOG.getLogger(RBlockViewport.class.getName());
 	
 	//private final ArrayList awtComponents = new ArrayList();
 	private final RenderableContainer container;
@@ -212,9 +217,9 @@ public class RBlockViewport extends BaseRCollection {
 	public void layout(int desiredWidth, int desiredHeight, Insets paddingInsets, int yLimit, FloatingBounds floatBounds, boolean sizeOnly) {
 		// Expected in GUI thread. It's possible it may be invoked during pack()
 		// outside of the GUI thread.
-		if(!EventQueue.isDispatchThread() && logger.isLoggable(Level.INFO)) {
-			logger.warning("layout(): Invoked outside GUI dispatch thread.");
-		}
+//		if(!EventQueue.isDispatchThread() && //logger.isLoggable(Level.INFO)) {
+//			logger.warning("layout(): Invoked outside GUI dispatch thread.");
+//		}
 		RenderableContainer container = this.container;	
 		this.paddingInsets = paddingInsets;
 		this.yLimit = yLimit;
@@ -1320,9 +1325,9 @@ public class RBlockViewport extends BaseRCollection {
 	}
 
 	public Iterator getRenderables(Rectangle clipBounds) {
-		if(!EventQueue.isDispatchThread() && logger.isLoggable(Level.INFO)) {
-			logger.warning("getRenderables(): Invoked outside GUI dispatch thread.");
-		}
+//		if(!EventQueue.isDispatchThread() && //logger.isLoggable(Level.INFO)) {
+//			//logger.warning("getRenderables(): Invoked outside GUI dispatch thread.");
+//		}
 		ArrayList sr = this.seqRenderables;
 		Iterator baseIterator = null;
 		if(sr != null) {
@@ -1375,9 +1380,9 @@ public class RBlockViewport extends BaseRCollection {
 	}
 	
 	public Iterator getRenderables(int pointx, int pointy) {
-		if(!EventQueue.isDispatchThread() && logger.isLoggable(Level.INFO)) {
-			logger.warning("getRenderable(): Invoked outside GUI dispatch thread.");
-		}
+//		if(!EventQueue.isDispatchThread() && //logger.isLoggable(Level.INFO)) {
+//			//logger.warning("getRenderable(): Invoked outside GUI dispatch thread.");
+//		}
 		Collection result = null;
 		SortedSet others = this.positionedRenderables;
 		int size = others == null ? 0 : others.size();
@@ -2114,9 +2119,7 @@ public class RBlockViewport extends BaseRCollection {
 			if(node == null) {
 				renderable = this.createRenderable(bodyLayout, markupElement);
 				if(renderable == null) {
-					if(logger.isLoggable(Level.INFO)) {
-						logger.info("layoutMarkup(): Don't know how to render " + markupElement + ".");
-					}
+				
 					return;
 				}
 				markupElement.setUINode((UINode) renderable);

@@ -4,7 +4,6 @@ import org.lobobrowser.html.*;
 import org.lobobrowser.html.gui.*;
 import org.lobobrowser.html.style.*;
 import org.lobobrowser.html.test.*;
-import org.w3c.dom.*;
 import scene.action.*;
 import scene.dnd.*;
 
@@ -14,10 +13,10 @@ import javax.swing.event.*;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.dnd.*;
-import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.*;
+import java.beans.*;
 
 /**
  * Copyright hideftvads.com 2009 all rights reserved.
@@ -40,11 +39,9 @@ public class WebAnimator extends JInternalFrame {
     };
     public JSlider startSlider = new JSlider();
     public JSlider stopSlider = new JSlider();
-    final private HtmlPanel htmlPanel = new HtmlPanel();
     private static final Charset UTF8 = Charset.forName("UTF8");
-    final private SimpleUserAgentContext ucontext = new SimpleUserAgentContext();
-    final private HtmlRendererContext rcontext = new SimpleHtmlRendererContext(htmlPanel, ucontext);
-    private JScrollPane jScrollPane = new JScrollPane(htmlPanel);
+    private JScrollPane jScrollPane = null;
+    private HtmlPanel htmlPanel = null;
 
     public WebAnimator(Object... a) {
         super("Create Web Animation");
@@ -54,11 +51,9 @@ public class WebAnimator extends JInternalFrame {
     private void init() {
 
 
-        htmlPanel.setDefaultOverflowY(RenderState.OVERFLOW_AUTO);
-        htmlPanel.setDefaultMarginInsets(new Insets(0, 0, 0, 0));
         panel.add(getQrCode(), BorderLayout.WEST);
-        jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        panel.add(jScrollPane, BorderLayout.CENTER);
+//        jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+//        panel.add(jScrollPane, BorderLayout.CENTER);
         bar.add(urlText);
         content.add(panel, BorderLayout.CENTER);
         content.add(bar, BorderLayout.NORTH);
@@ -79,22 +74,22 @@ public class WebAnimator extends JInternalFrame {
 //        
         west.add(jSplitPane);
 
-        final JScrollBar verticalScrollBar = jScrollPane.getVerticalScrollBar();
-        final AdjustmentListener[] listeners = verticalScrollBar.getAdjustmentListeners();
-
-        verticalScrollBar.addAdjustmentListener(new AdjustmentListener() {
-            @Override
-            public void adjustmentValueChanged(AdjustmentEvent e) {
-                startSlider.setMaximum(verticalScrollBar.getMaximum() - verticalScrollBar.getModel().getExtent());
+//        final JScrollBar verticalScrollBar = jScrollPane.getVerticalScrollBar();
+//        final AdjustmentListener[] listeners = verticalScrollBar.getAdjustmentListeners();
+//
+//        verticalScrollBar.addAdjustmentListener(new AdjustmentListener() {
+//            @Override
+//            public void adjustmentValueChanged(AdjustmentEvent e) {
+//                startSlider.setMaximum(verticalScrollBar.getMaximum() - verticalScrollBar.getModel().getExtent());
 //                     startSlider.setExtent(verticalScrollBar.getModel().getExtent());
-                stopSlider.setMaximum(verticalScrollBar.getMaximum() - verticalScrollBar.getModel().getExtent());
+//                stopSlider.setMaximum(verticalScrollBar.getMaximum() - verticalScrollBar.getModel().getExtent());
 //                     stopSlider.setExtent(verticalScrollBar.getModel().getExtent());
-            }
-        });
-
-        startSlider.addChangeListener(new MyChangeListener(verticalScrollBar));
-        stopSlider.addChangeListener(new MyChangeListener(verticalScrollBar));
-
+//            }
+//        });
+//
+//        startSlider.addChangeListener(new MyChangeListener(verticalScrollBar));
+//        stopSlider.addChangeListener(new MyChangeListener(verticalScrollBar));
+//
 
         setContentPane(content);
         final JInternalFrame f = this;
@@ -112,16 +107,15 @@ public class WebAnimator extends JInternalFrame {
         f.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         f.setDropTarget(new DropTarget(f, DnDConstants.ACTION_LINK, new WebViewDropTargetListener((WebAnimator) f), true));
-
-        htmlPanel.addSelectionChangeListener(new SelectionChangeListener() {
-            public void selectionChanged(final SelectionChangeEvent event) {
-                final Node selectionNode = htmlPanel.getSelectionNode();
-                System.err.println("selectionChanged(): selection node: " + selectionNode);
-               
-
-
-            }
-        });
+//
+//        htmlPanel.addSelectionChangeListener(new SelectionChangeListener() {
+//            public void selectionChanged(final SelectionChangeEvent event) {
+//                final Node selectionNode = htmlPanel.getSelectionNode();
+//                System.err.println("selectionChanged(): selection node: " + selectionNode);
+//
+//
+//            }
+//        });
 
         final DropTarget dropTarget1 = new DropTarget(qrCode, DnDConstants.ACTION_COPY_OR_MOVE,
                 new DropTargetListener() {
@@ -250,7 +244,23 @@ public class WebAnimator extends JInternalFrame {
     public void updateEditor(URL url) {
         if (url != null) {
 
-            this.rcontext.navigate(url, null);
+            
+            if(htmlPanel!=null)
+            panel.remove(htmlPanel);
+            panel.add(htmlPanel=new HtmlPanel( ));
+            htmlPanel.setDefaultOverflowY(RenderState.OVERFLOW_SCROLL);
+            htmlPanel.setDefaultMarginInsets(new Insets(0, 0, 0, 0));
+            final SimpleUserAgentContext ucontext = new SimpleUserAgentContext();
+            final HtmlRendererContext rcontext = new SimpleHtmlRendererContext(htmlPanel, ucontext);
+
+            rcontext.navigate(url, null);
+                                                                htmlPanel.addPropertyChangeListener(new PropertyChangeListener() {
+                                                                    @Override
+                                                                    public void propertyChange(PropertyChangeEvent evt) {
+                                                                         System.err.println(":"+evt.getPropertyName()+":"+evt.getOldValue()+":"+evt.getNewValue()  );
+                                                                    }
+                                                                });
+            
 
             getUrlText().setText(url.toExternalForm());
             try {
@@ -279,6 +289,8 @@ public class WebAnimator extends JInternalFrame {
         return htmlPanel;
     }
 
+    
+
     private static class MyChangeListener implements ChangeListener {
         private final JScrollBar verticalScrollBar;
 
@@ -290,7 +302,6 @@ public class WebAnimator extends JInternalFrame {
         public void stateChanged(ChangeEvent e) {
             final int value = ((JSlider) e.getSource()).getValue();
             verticalScrollBar.setValue(value);
-
         }
     }
 }
