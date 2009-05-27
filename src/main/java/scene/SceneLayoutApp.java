@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.List;
@@ -213,52 +214,32 @@ public class SceneLayoutApp {
 
     static {
         XSTREAM = new XStream();
-//        XSTREAM.aliasType( "triple", Triple.class);
-        final JEditorPane ed = new JEditorPane();
-
-//        final SimpleUserAgentContext userAgentContext = new SimpleUserAgentContext();
-//        final SimpleHtmlRendererContext rendererContext = new SimpleHtmlRendererContext(ed, userAgentContext);
-
         desktopPane = new JDesktopPane() {
+            final JEditorPane ed = new JEditorPane();
 
-
-            Callable<Image> callable = new Callable<Image>() {
-                public Image call() throws Exception {
-                    setOpaque(false);
-                    ed.setSize(getSize());
-                    ed.setOpaque(true);
-//                    ed.setBackground(Color.black);
-                    final String s = Arrays.toString(System.getenv().values().toArray());
-                    final String s1 = URLEncoder.encode(s);
-//                    rendererContext.navigate("http://www.hideftvads.com");
-ed.setPage("http://www.hideftvads.com");
-//                        ed.setEnabled(false);
-
-                    ed.invalidate();
-                    ed.repaint();
-                    return null;
+            {
+                setOpaque(false);
+                try {
+                    ed.setOpaque(false);
+                    ed.setBackground(Color.black);
+                    ed.setPage("http://www.hideftvads.com");
+                    ed.setEditable(false);
+                    ed.setEnabled(false);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            };
-            Future<Image> future =
 
-                    (Future<Image>) SceneLayoutApp.threadPool.submit(callable);
+            }
 
             @Override
             public void paint(Graphics g) {
-                
-                try {
-                    final Image o = future.get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();  //TODO: Verify for a purpose
-                } catch (ExecutionException e) {
-                    e.printStackTrace();  //TODO: Verify for a purpose
-                }
+                Graphics2D g2 = (Graphics2D) g;
                 ed.setSize(getSize());
-                ed.paint(g);  super.paint(g);
+                ed.paint(g);
+                super.paint(g);
             }
 
         };
-        desktopPane.invalidate();
     }
 
     static public void main(String[] args) {
