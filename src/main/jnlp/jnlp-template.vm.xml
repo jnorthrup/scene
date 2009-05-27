@@ -40,7 +40,7 @@
               max-heap-size="1g"
               java-vm-args="-XX:+AggressiveOpts -server"
                 />
-        <!--$dependencies-->
+        $dependencies
 
     </resources>
 
