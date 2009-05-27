@@ -1,37 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
-    spec="$jnlpspec"
-    codebase="$$codebase"
-    context="$$context"
-    href="$$name">
-  <information>
-    <title>$project.Name</title>
-    <vendor>$project.Organization.Name</vendor>
-    <homepage href="$project.Url"/>
-    <description>$project.Description</description>
-#if($offlineAllowed)
-    <!--offline-allowed/-->
-#end
-  </information>
-#if($allPermissions)
-  <security>
-     <all-permissions/>
-  </security>
-#end
-  <!--resources>
-    <j2se version="$j2seVersion"/>
-     $dependencies
-  </resources-->
-  
-      <j2se version="1.6+"
-       initial-heap-size="32m"
-       max-heap-size="1g"
-       />
-       $dependencies
+        spec="$jnlpspec"
+        codebase="$project.Url"
+        href="$outputFile">
+    <information>
+        <title>$project.Name</title>
+        <vendor>$project.Organization.Name</vendor>
+        <homepage href="$project.Organization.Url"/>
+        <description>$project.Description</description>
+        <description kind="one-line">HidefTVAds! Scene Layout Tool</description>
+        <description kind="short">this application helps arrange video overlay geometies for inventory import.
+            this is intended for multimedia advertising for the sole purpose of HidefTVAds! and its strategic
+            partnerships.
+
+            Warranty noly valid for represented accounts.
+        </description>
+        <description kind="tooltip">HideftvAds! Scene Layout Tool</description>
+        <icon
+                width="640"
+                height="360"
+                kind="splash"
+                href="http://sites.hideftvads.com/i1/Home/Looking_to_the_sky_above_by_Sitar_sama-1.jpg"/>
+        #if($offlineAllowed)
+        <!--offline-allowed/-->
+        #end
+    </information>
+    #if($allPermissions)
+    <security>
+        <all-permissions/>
+    </security>
+    #end
+
+    <resources>
+        ##      <j2se version="$j2seVersion"/>
+
+        <j2se version="1.6+"
+              initial-heap-size="32m"
+              max-heap-size="1g"
+                />
+        $dependencies
     </resources>
     <application-desc main-class="$mainClass">
-      <!--argument>1</argument>
-      <argument>2</argument-->
-    </application-desc> 
+        <!--argument>1</argument>
+        <argument>2</argument-->
+    </application-desc>
 </jnlp>
 
