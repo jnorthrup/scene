@@ -39,6 +39,7 @@
         <j2se version="1.6+"
               max-heap-size="1g"
               java-vm-args="-XX:+AggressiveOpts -server"
+               <!---XX:+PrintOptoBailouts -XX:+TraceOptoParse -XX:+PrintCompilation -XX:+TraceDeoptimization -XX:CompileThreshold=10 -Xcomp-->
                 />
         $dependencies
 
