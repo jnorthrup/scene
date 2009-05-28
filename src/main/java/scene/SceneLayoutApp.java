@@ -24,13 +24,55 @@ public class SceneLayoutApp {
     public static final JTextPane permText = new JTextPane();
     public static final Timer TIMER = new Timer();
 
+    public static final XStream XSTREAM;
+
+    static {
+        XSTREAM = new XStream();
+        final Class<Pair> aClass = Pair.class;
+        final Class<Triple> tripleClass = Triple.class;
+        
+        desktopPane = new JDesktopPane() {
+            final JEditorPane ed = new JEditorPane();
+
+            {
+                setOpaque(false);
+                try {
+                    ed.setOpaque(false);
+                    ed.setBackground(Color.black);
+                    ed.setPage("http://www.hideftvads.com");
+                    ed.setEditable(false);
+                    ed.setEnabled(false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void paint(Graphics g) {
+                 ed.setSize(getSize());
+                ed.paint(g);
+                super.paint(g);
+            }
+
+        };
+    }
+
+    static public void main(String[] args) {
+
+//        final BrowserFrame browserFrame = new BrowserFrame();
+
+        new SceneLayoutApp();
+
+    }
+                               
     public final static JDesktopPane desktopPane;
     private static SceneLayoutApp instance;
     public static ExecutorService threadPool = Executors.newCachedThreadPool();
 
     public SceneLayoutApp() {
         super();
-
+           new Pair();
         final JFrame frame = new JFrame("Scene Layout");
 
 
@@ -207,46 +249,6 @@ public class SceneLayoutApp {
 
         dumpWindow.setJMenuBar(m);
         frame.setVisible(true);
-
-    }
-
-    public static final XStream XSTREAM;
-
-    static {
-        XSTREAM = new XStream();
-        desktopPane = new JDesktopPane() {
-            final JEditorPane ed = new JEditorPane();
-
-            {
-                setOpaque(false);
-                try {
-                    ed.setOpaque(false);
-                    ed.setBackground(Color.black);
-                    ed.setPage("http://www.hideftvads.com");
-                    ed.setEditable(false);
-                    ed.setEnabled(false);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void paint(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g;
-                ed.setSize(getSize());
-                ed.paint(g);
-                super.paint(g);
-            }
-
-        };
-    }
-
-    static public void main(String[] args) {
-
-//        final BrowserFrame browserFrame = new BrowserFrame();
-
-        new SceneLayoutApp();
 
     }
 

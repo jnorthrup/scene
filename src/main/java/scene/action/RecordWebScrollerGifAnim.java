@@ -1,17 +1,16 @@
 package scene.action;
 
-import scene.SceneLayoutApp;
-import scene.anim.WebAnimator;
-import scene.gif.AnimatedGifEncoder;
+import org.lobobrowser.html.gui.*;
+import scene.*;
+import scene.anim.*;
+import scene.gif.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.concurrent.Exchanger;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.awt.event.*;
+import java.awt.image.*;
+import java.io.*;
+import java.util.concurrent.*;
 
 /**
  * Copyright hideftvads.com 2009 all rights reserved.
@@ -31,85 +30,100 @@ public class RecordWebScrollerGifAnim extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-
         final Exchanger<BufferedImage> engine = new Exchanger<BufferedImage>();
+        JScrollBar slider = null /*= webAnimator.getJScrollPane().getVerticalScrollBar();*/;
+        final Component[] renderable = webAnimator.getHtmlPanel().getComponents();
+        for (Component component : renderable) {
+            System.err.println("" + component.getClass().getName());
+            if (component instanceof HtmlBlockPanel) {
+                HtmlBlockPanel p = (HtmlBlockPanel) component;
 
-        final Adjustable slider = webAnimator.getJScrollPane().getVerticalScrollBar();
+                final Component[] components = p.getComponents();
 
-        final int iend = (int) webAnimator.stopSlider.getValue();
-        final int beg = webAnimator.startSlider.getValue();
-        final boolean custom = iend>beg/*beg == end*/;
-
-        slider.setValue(custom ? webAnimator.startSlider.getValue() : slider.getMinimum());
-        try {
-            engine.exchange(null, 1, TimeUnit.NANOSECONDS);
-        } catch (Exception ignored) {
-        }
+                for (Component o1 : components) {
 
 
-        Runnable painterThread = new Runnable() {
-            public void run() {
+                    if (o1 instanceof JScrollBar && ((JScrollBar) o1).getOrientation() == JScrollBar.VERTICAL) ;
+                    {
+                        slider = (JScrollBar) o1;
+                        break;
+                    }
+                }
+            }
+
+            final int iend = (int) webAnimator.stopSlider.getValue();
+            final int beg = webAnimator.startSlider.getValue();
+            final boolean custom = iend > beg/*beg == end*/;
+            slider.setValue(custom ? webAnimator.startSlider.getValue() : slider.getMinimum());
+
+            final JScrollBar slider1 = slider;
+
+
+            final JScrollBar slider2 = slider;
+            Runnable painterThread = new Runnable() {
+                public void run() {
+                    try {
+                    } catch (Exception e1) {
+                    }
+                    BufferedImage image = null;
+                    final double end = custom ? iend : slider2.getMaximum();
+                    while (slider2.getValue() < end) {
+
+
+                        if (image == null) {
+                            image = (BufferedImage) webAnimator.getPanel().createImage(webAnimator.getPanel().getWidth(), webAnimator.getPanel().getHeight());
+                        }
+
+                        webAnimator.getPanel().paint(image.getGraphics());
+                        try {
+                            image = engine.exchange(image);
+                        } catch (InterruptedException e1) {
+                            return;
+                        }
+                        int maximum = slider2.getMaximum();
+                        int value = slider2.getValue();
+
+                        slider2.setValue(value + 1);
+                    }
+
+                    try {
+                        engine.exchange(null);
+                    } catch (InterruptedException ignored) {
+                    }
+
+                }
+            };
+
+            final JFileChooser chooser = new JFileChooser("/tmp/");
+
+            if (JFileChooser.APPROVE_OPTION == chooser.showSaveDialog(SceneLayoutApp.desktopPane)) {
+
+
+                File selectedFile = chooser.getSelectedFile();
+                AnimatedGifEncoder gifEncoder = new AnimatedGifEncoder();
+
+                gifEncoder.setFrameRate(10);
+                gifEncoder.setQuality(10);
+                gifEncoder.setDelay(100);
+                gifEncoder.start(selectedFile.getAbsolutePath());
+                Future<Object> future = (Future<Object>) SceneLayoutApp.threadPool.submit(painterThread);
+
+
+                BufferedImage image = null;
                 try {
+                    do {
+                        image = engine.exchange(image);
+                        gifEncoder.addFrame(image);
+
+                    }
+                    while (image != null);
+                    future.get();
                 } catch (Exception e1) {
                 }
-                BufferedImage image = null;
-                final double end = custom?iend:slider.getMaximum();
-                while (slider.getValue() < end) {
-
-
-                    if (image == null) {
-                        image = (BufferedImage) webAnimator.getPanel().createImage(webAnimator.getPanel().getWidth(), webAnimator.getPanel().getHeight());
-                    }
-
-                    webAnimator.getPanel().paint(image.getGraphics());
-                    try {
-                        image = engine.exchange(image);
-                    } catch (InterruptedException e1) {
-                        return;
-                    }
-                    int maximum = slider.getMaximum();
-                    int value = slider.getValue();
-
-                    slider.setValue(value + 1);
-                }
-
-                try {
-                    engine.exchange(null);
-                } catch (InterruptedException ignored) {
-                }
+                System.out.println("gifencoder.finish() =" + gifEncoder.finish());
+                webAnimator.pack();
 
             }
-        };
-
-        final JFileChooser chooser = new JFileChooser("/tmp/");
-
-        if (JFileChooser.APPROVE_OPTION == chooser.showSaveDialog(SceneLayoutApp.desktopPane)) {
-
-
-            File selectedFile = chooser.getSelectedFile();
-            AnimatedGifEncoder gifEncoder = new AnimatedGifEncoder();
-
-            gifEncoder.setFrameRate(10);
-            gifEncoder.setQuality(10);
-            gifEncoder.setDelay(100);
-            gifEncoder.start(selectedFile.getAbsolutePath());
-            Future<Object> future = (Future<Object>) SceneLayoutApp.threadPool.submit(painterThread);
-
-
-            BufferedImage image = null;
-            try {
-                do {
-                    image = engine.exchange(image);
-                    gifEncoder.addFrame(image);
-
-                }
-                while (image != null);
-                future.get();
-            } catch (Exception e1) {
-            }
-            System.out.println("gifencoder.finish() =" + gifEncoder.finish());
-            webAnimator.pack();
-
         }
     }
 }
