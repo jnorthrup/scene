@@ -1,0 +1,126 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf460
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\froman\fcharset0 Times-Roman;}
+{\colortbl;\red255\green255\blue255;}
+\vieww37820\viewh23120\viewkind0
+\deftab720
+\pard\pardeftab720\ql\qnatural
+
+\f0\fs24 \cf0 attached is a number of images, i hope\
+\
+first figure:\
+\
+this shows the hideftvads web-page based creative generator\'a0\
+\
+there are two versions coded for, each with\'a0a whole set of naturally different strengths and weaknesses\
+\
+version differences:\
+\
+\
+v1:\
+\
+myspace/lisabe.mp4 is done on v1,\'a0\
+example: http://demos.hideftvads.com/lisabe.mp4\
+\
+* html 3.2 only.\
+* better graphics adapter perspective and scale on various platforms.\
+* higher /more reliable framerate rendering capture of gifanims\
+* might need some testing with the new final generator code\
+* start/stop fine-tuning to show just a portion\
+* can render rtf and rich text docs\
+* better widget API for features\
+\
+v2:\
+* handles css, javascript\'a0\
+* can potentially display some spectrum of javascript banners\'a0\
+* asymptotic rendering and framerate of capture- e.g. loop animations would have pseudo-random display ordering\'a0\
+* potentially slower\
+* the hackish API can soak up dev time like a mug, for instance, and is brittle upstream\
+\
+features in common:\'a0\
+\
+look and feel:\
+* look and feel choices are available and different on each java platform. \'a0\
+\
+Barcode and Drag n Drop\
+* \'a0url requires http:// prefix or for whatever protocol\
+* barcode gets updated on hitting enter to the vertical size left-side \'a0\'a0\
+\
+animation generation back end:\'a0\
+* requires writing to /tmp or c:\\tmp or z:\\tmp, etc. , the nearest approximation of a ram drive or SSD drive you can throw at it\
+* dual threaded,\'a0e.g.\'a0uses\'a02\'a0cores\'a0per\'a0animation,\'a0but roughly speaking more like 1.2 cores and 100% drive IO\
+*\'a0gifanims\'a0write big simple animations but they seem to work well enough on the surface\
+	* gif colormodels are screwy sometimes sort of like a tv screen on the fritz so color banding on the edges is a factor to consider in content design\
+	* photoshopping the end-result might be good for optimizations and forcing the colormodel values to converge\
+\
+* mp4:\
+	* punishing amounts of small files to disc,\'a0potenentially\'a0millions\'a0of\'a0png's in degenerate IO errors such as loss of network drive or permissions problems\
+	* professional support contracts available, this requires platform dependant binaries in addition to the java webstart gui, as well as codec installations\
+\
+\
+second , third, fourth figures:\
+shows the progress and slider creators in the gui, \'a0and the products so created as gif animations,\'a0\
+\
+features:\
+lots of dials and whistles are possible an lots of potential timeline integrations can be foreseen \'a0 \
+\
+\
+Figure 5,6:\
+The scene windows:\
+the scene can accept dragged images and produces an xml description of the geometry for rendering of video overlays\
+for flash applications, this xml is the description of which images to place/scale/rotate (todo) onto a canvas (low energy, low effort, player-specific)\
+for h264 video targets, this xml is sent to create hard splice overlays on an entire campaign rendering cartesian product  (high energy, high effort, universally playable h264)\
+\
+Figure 1:\
+shows the Web Animation creators.\
+{{\NeXTGraphic pastedGraphic.png \width14358 \height9438
+}¬}\pard\pardeftab720\ql\qnatural
+
+\f1 \cf0 \
+\pard\pardeftab720\ql\qnatural
+
+\f0 \cf0 \
+Figure 2: shows the progress and slider generators\
+\
+{{\NeXTGraphic pastedGraphic_1.png \width9338 \height8298
+}¬}\pard\pardeftab720\ql\qnatural
+
+\f1 \cf0 \
+\pard\pardeftab720\ql\qnatural
+
+\f0 \cf0 figure 3:\
+shows the progress bar with a mac l&f (only available on mac, windows UI only available on windows)\
+{{\NeXTGraphic progress_101.gif \width7020 \height840
+}¬}\pard\pardeftab720\ql\qnatural
+
+\f1 \cf0 \
+\pard\pardeftab720\ql\qnatural
+
+\f0 \cf0 figure 4:\
+slider bar, vanilla version\
+{{\NeXTGraphic slider_101.gif \width7380 \height640
+}¬}\pard\pardeftab720\ql\qnatural
+
+\f1 \cf0 \
+\pard\pardeftab720\ql\qnatural
+
+\f0 \cf0 \
+figure 5:\
+a scene \
+{{\NeXTGraphic pastedGraphic_2.png \width9318 \height8438
+}¬}\pard\pardeftab720\ql\qnatural
+
+\f1 \cf0 \
+\pard\pardeftab720\ql\qnatural
+
+\f0 \cf0 \
+figure 6: \
+the xml window (shown without xml)\
+{{\NeXTGraphic pastedGraphic_3.png \width9278 \height8338
+}¬}\pard\pardeftab720\ql\qnatural
+
+\f1 \cf0 \
+\pard\pardeftab720\ql\qnatural
+
+\f0 \cf0 \
+\'a0\
+}
