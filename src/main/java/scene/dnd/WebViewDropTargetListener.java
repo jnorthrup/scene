@@ -2,7 +2,7 @@ package scene.dnd;
 
 import scene.ScenePanel;
 import scene.action.WebAnimUrlTextAction;
-import scene.anim.WebAnimator;
+import scene.anim.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,9 +27,9 @@ import java.util.Collection;
 public class WebViewDropTargetListener implements DropTargetListener {
 
     private static final Charset UTF16 = Charset.forName("UTF16");
-    public final WebAnimator frame;
+    public final WebAnimatorImpl frame;
 
-    public WebViewDropTargetListener(WebAnimator
+    public WebViewDropTargetListener(WebAnimatorImpl
             frame) {
         this.frame = frame;
         this.frame.getUrlText().addActionListener(new WebAnimUrlTextAction(this));

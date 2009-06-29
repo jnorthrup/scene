@@ -1,22 +1,17 @@
 package scene.action;
 
 import scene.SceneLayoutApp;
-import scene.anim.WebAnimator;
+import scene.anim.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.*;
 
-/**
- * Copyright hideftvads.com 2009 all rights reserved.
- * <p/>
- * User: jim
- * Date: May 17, 2009
- * Time: 12:51:29 AM
- */
-public class CreateWebViewAction extends AbstractAction {
+  
+public class CreateWebViewV1Action extends AbstractAction {
 
-    public CreateWebViewAction() {
-        super("Web");
+    public CreateWebViewV1Action() {
+        super("WebV1");
     }
 
     /**
@@ -25,18 +20,16 @@ public class CreateWebViewAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        final WebAnimator animator = new WebAnimator();
+        final WebAnimator  animator = new WebAnimatorV1();
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                SceneLayoutApp.desktopPane.add(animator);
+                SceneLayoutApp.desktopPane.add((Component) animator);
                 animator.setSize(400, 120);
                 animator.show();
                 animator.pack();
             }
         });
-    }
-
-    ;;
+    } ;
 
 };

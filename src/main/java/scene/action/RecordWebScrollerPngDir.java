@@ -21,9 +21,9 @@ import java.util.concurrent.*;
  * Time: 1:28:00 PM
  */
 public class RecordWebScrollerPngDir extends AbstractAction {
-    private WebAnimator webAnimator;
+    private WebAnimatorImpl webAnimator;
 
-    public RecordWebScrollerPngDir(WebAnimator webAnimator) {
+    public RecordWebScrollerPngDir(WebAnimatorImpl webAnimator) {
         super(">.mp4");
         this.webAnimator = webAnimator;
     }
@@ -51,10 +51,10 @@ public class RecordWebScrollerPngDir extends AbstractAction {
                 }
             }
 
-            final int iend = (int) webAnimator.stopSlider.getValue();
-            final int beg = webAnimator.startSlider.getValue();
+            final int iend = (int) webAnimator.getStopSlider().getValue();
+            final int beg = webAnimator.getStartSlider().getValue();
             final boolean custom = iend > beg/*beg == end*/;
-            slider.setValue(custom ? webAnimator.startSlider.getValue() : slider.getMinimum());
+            slider.setValue(custom ? webAnimator.getStartSlider().getValue() : slider.getMinimum());
 
             final JScrollBar slider1 = slider;
             Runnable painterThread = new Runnable() {

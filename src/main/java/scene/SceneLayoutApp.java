@@ -30,7 +30,7 @@ public class SceneLayoutApp {
         XSTREAM = new XStream();
         final Class<Pair> aClass = Pair.class;
         final Class<Triple> tripleClass = Triple.class;
-        
+
         desktopPane = new JDesktopPane() {
             final JEditorPane ed = new JEditorPane();
 
@@ -50,7 +50,7 @@ public class SceneLayoutApp {
 
             @Override
             public void paint(Graphics g) {
-                 ed.setSize(getSize());
+                ed.setSize(getSize());
                 ed.paint(g);
                 super.paint(g);
             }
@@ -65,14 +65,14 @@ public class SceneLayoutApp {
         new SceneLayoutApp();
 
     }
-                               
+
     public final static JDesktopPane desktopPane;
     private static SceneLayoutApp instance;
     public static ExecutorService threadPool = Executors.newCachedThreadPool();
 
     public SceneLayoutApp() {
         super();
-           new Pair();
+        new Pair();
         final JFrame frame = new JFrame("Scene Layout");
 
 
@@ -192,7 +192,8 @@ public class SceneLayoutApp {
 
 
         permaViz.setSelected(false);
-        bar.add(new CreateWebViewAction());
+        bar.add(new CreateWebViewV1Action());
+        bar.add(new CreateWebViewV2Action());
         bar.add(permaViz);
         desktopPane.add(dumpWindow);
         dumpWindow.setSize(400, 400);
@@ -202,7 +203,7 @@ public class SceneLayoutApp {
         final JMenuBar m = new JMenuBar();
         final JMenu cmenu = new JMenu("Create");
         m.add(cmenu);
-        final JMenuItem CreateAction = new JMenuItem(new AbstractAction("new") {
+        final JMenuItem menuItem = new JMenuItem(new AbstractAction("new") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Runnable runnable = new Runnable() {
@@ -241,7 +242,8 @@ public class SceneLayoutApp {
                 );
             }
         });
-        cmenu.add(CreateAction);
+        cmenu.add(
+                menuItem);
 //        JMenuBar menuBar = new JMenuBar();
 
 

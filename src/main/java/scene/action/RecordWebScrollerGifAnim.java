@@ -20,9 +20,9 @@ import java.util.concurrent.*;
  * Time: 1:28:00 PM
  */
 public class RecordWebScrollerGifAnim extends AbstractAction {
-    private WebAnimator webAnimator;
+    private WebAnimatorImpl webAnimator;
 
-    public RecordWebScrollerGifAnim(WebAnimator webAnimator) {
+    public RecordWebScrollerGifAnim(WebAnimatorImpl webAnimator) {
         super(">.gif");
         this.webAnimator = webAnimator;
     }
@@ -51,10 +51,10 @@ public class RecordWebScrollerGifAnim extends AbstractAction {
                 }
             }
 
-            final int iend = (int) webAnimator.stopSlider.getValue();
-            final int beg = webAnimator.startSlider.getValue();
+            final int iend = (int) webAnimator.getStopSlider().getValue();
+            final int beg = webAnimator.getStartSlider().getValue();
             final boolean custom = iend > beg/*beg == end*/;
-            slider.setValue(custom ? webAnimator.startSlider.getValue() : slider.getMinimum());
+            slider.setValue(custom ? webAnimator.getStartSlider().getValue() : slider.getMinimum());
 
             final JScrollBar slider1 = slider;
 
