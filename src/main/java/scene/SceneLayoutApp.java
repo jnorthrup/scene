@@ -39,7 +39,7 @@ public class SceneLayoutApp {
                 try {
                     ed.setOpaque(false);
                     ed.setBackground(Color.black);
-                    ed.setPage("http://www.hideftvads.com");
+                    ed.setPage("http://www.vsiwest.com");
                     ed.setEditable(false);
                     ed.setEnabled(false);
                 } catch (IOException e) {
