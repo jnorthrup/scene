@@ -1,6 +1,6 @@
 package scene.action;
 
-import org.lobobrowser.html.gui.*;
+//import org.lobobrowser.html.gui.*;
 import scene.*;
 import scene.anim.*;
 import scene.gif.*;
@@ -35,21 +35,6 @@ public class RecordWebScrollerGifAnim extends AbstractAction {
         final Component[] renderable = webAnimator.getHtmlPanel().getComponents();
         for (Component component : renderable) {
             System.err.println("" + component.getClass().getName());
-            if (component instanceof HtmlBlockPanel) {
-                HtmlBlockPanel p = (HtmlBlockPanel) component;
-
-                final Component[] components = p.getComponents();
-
-                for (Component o1 : components) {
-
-
-                    if (o1 instanceof JScrollBar && ((JScrollBar) o1).getOrientation() == JScrollBar.VERTICAL) ;
-                    {
-                        slider = (JScrollBar) o1;
-                        break;
-                    }
-                }
-            }
 
             final int iend = (int) webAnimator.getStopSlider().getValue();
             final int beg = webAnimator.getStartSlider().getValue();

@@ -193,7 +193,7 @@ public class SceneLayoutApp {
 
         permaViz.setSelected(false);
         bar.add(new CreateWebViewV1Action());
-        bar.add(new CreateWebViewV2Action());
+//        bar.add(new CreateWebViewV2Action());
         bar.add(permaViz);
         desktopPane.add(dumpWindow);
         dumpWindow.setSize(400, 400);
